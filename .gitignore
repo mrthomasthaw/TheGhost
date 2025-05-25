@@ -10,6 +10,22 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/Assets/The Division Kit 2.0/
+/Assets/TerrainTexturesPackFree/
+/Assets/_TerrainAutoUpgrade/
+/Assets/Standard Asset ThirdPersonCharacter/
+/Assets/Tree9/
+/Assets/YughuesFreeBushes2018/
+/Assets/Intense TPS/
+/Assets/Mecanim/
+/Assets/Models/
+/Assets/MyAnimator/
+/Assets/PistolAnimsetPro/
+/Assets/FemaleMovementAnimsetPro/
+/Assets/Rifle_01_v25/
+/Assets/RifleAnimsetPro/
+/Assets/RifleAnimsetPro_CrouchAndProne/
+/Assets/Scenes/
 *.log
 
 # MemoryCaptures can get excessive in size.
