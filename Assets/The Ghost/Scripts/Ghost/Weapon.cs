@@ -84,6 +84,7 @@ public class Weapon : MonoBehaviour
                 _nextBulletLoadingTimer = nextBulletLoadingElapse;
             }
 
+            pullTrigger = false;
         }
         else
         {
@@ -101,7 +102,6 @@ public class Weapon : MonoBehaviour
         {
             particleSystem[x].Play();
         }
-
     }
 
     public void Shoot(bool input)

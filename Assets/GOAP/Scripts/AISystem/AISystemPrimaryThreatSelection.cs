@@ -39,9 +39,9 @@ namespace MrThaw.Goap.AISystem
                 selectedThreatInfo = null;
                 selectedPrimaryThreat = null;
 
-                if(! aIController.WorldState["aiAlertType"].Equals(EnumType.AIAlertType.Normal))
+                if(! aIController.AgentWorldState.CheckEqual("aiAlertType", EnumType.AIAlertType.Normal))
                 {
-                    aIController.WorldState["aiAlertType"] = EnumType.AIAlertType.Normal;
+                    aIController.AgentWorldState.Set("aiAlertType", EnumType.AIAlertType.Normal);
                     aIController.Replan = true;
                 }
                 
@@ -71,16 +71,16 @@ namespace MrThaw.Goap.AISystem
 
             //Debug.Log("Threat found : " + primaryThreatInfo);
 
-            if(! aIController.WorldState["aiAlertType"].Equals(EnumType.AIAlertType.Danger))
+            if(! aIController.AgentWorldState.CheckEqual("aiAlertType", EnumType.AIAlertType.Danger))
             {
-                aIController.WorldState["aiAlertType"] = EnumType.AIAlertType.Danger; // The Goal will either be Kill Target, Take Cover, similar to hasTarget
+                aIController.AgentWorldState.Set("aiAlertType", EnumType.AIAlertType.Danger); // The Goal will either be Kill Target, Take Cover, similar to hasTarget
                                                                                       // If the alert type is danger, it will set one of the following goal priority high [Kill Target, Take Cover]
 
                 aIController.Replan = true;
             }
 
             ///Debug.Log(CommonUtil.StringJoin(blackBoard.Datas));
-            Debug.Log("Updated by " + this.GetType() + " " + CommonUtil.DictToString(aIController.WorldState));
+            Debug.Log("Updated by " + this.GetType() + " " + CommonUtil.StringJoin(aIController.AgentWorldState.WorldStates));
         }
     }
 

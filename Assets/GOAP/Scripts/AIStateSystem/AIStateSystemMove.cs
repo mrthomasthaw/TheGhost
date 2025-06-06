@@ -38,6 +38,12 @@ namespace MrThaw
             aiTransform = _aiTransform;
         }
 
+        public override void OnStart(AIBlackBoard blackBoard)
+        {
+            base.OnStart(blackBoard);
+            OnStart();
+        }
+
         public override void OnStart()
         {
             agent.updatePosition = false;

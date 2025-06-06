@@ -29,6 +29,7 @@ namespace MrThaw
 
         private Animator animator;
         private ShooterWeaponSMB weaponSmb;
+        private WeaponTargetingSMB weaponTargetingSmb;
 
         private AIAnimationDict.AnimationDict currentAnimation = AIAnimationDict.AnimationDict.NoAnimation;
         private bool isCurrentAnimationInterruptable = true;
@@ -40,7 +41,12 @@ namespace MrThaw
 
         public override void OnStart(AIBlackBoard blackBoard)
         {
-            weaponSmb = animator.GetBehaviour<ShooterWeaponSMB>();
+            //weaponSmb = animator.GetBehaviour<ShooterWeaponSMB>();
+            weaponTargetingSmb = animator.GetBehaviour<WeaponTargetingSMB>();
+
+            Debug.Log("On Start!!!!!");
+            //Debug.Assert(weaponSmb != null);
+            Debug.Assert(weaponTargetingSmb != null);
 #if UNITY_EDITOR
             if (!weaponSmb)
                 Debug.Log("Needed reference not found. " + ToString());
@@ -89,6 +95,8 @@ namespace MrThaw
                     break;
 
                 case AIAnimationDict.AnimationDict.Fire:
+                    Debug.Log("Shoot!!!!!");
+                    weaponTargetingSmb.FireWeapon();
                     //weaponSmb.OnFireActivated();
                     break;
 

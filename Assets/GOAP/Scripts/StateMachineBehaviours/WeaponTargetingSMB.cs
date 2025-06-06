@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using MrThaw;
 using MrThaw.Goap.AIMemory.AIInfo;
+using System;
 
 public class WeaponTargetingSMB : CustomSMB
 {
 
     private WeaponPositionControl weaponPositionControl;
+    private WeaponInventory weaponInventory;
+
 
     public override void SetUp(Animator animator, AIBlackBoard blackBoard)
     {
         base.SetUp(animator, blackBoard);
         weaponPositionControl = animator.GetComponent<WeaponPositionControl>();
+        weaponInventory = animator.GetComponent<AIController>().WeaponInventory;
     }
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -30,5 +34,10 @@ public class WeaponTargetingSMB : CustomSMB
     {
         weaponPositionControl.HandleWeaponAim(false);
         weaponPositionControl.IKControl.SetLookObj(null);
+    }
+
+    public void FireWeapon()
+    {
+        weaponInventory.CurrentWeapon.Shoot(true);
     }
 }

@@ -36,11 +36,17 @@ public class MovementControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rigidbody.velocity = moveDirection * moveSpeed;
+        //moveDirection = animator.deltaPosition;
+        //rigidbody.velocity = moveDirection * moveSpeed;
     }
 
     private void OnAnimatorMove()
     {
-        moveDirection = animator.deltaPosition;
+        //moveDirection = animator.deltaPosition;
+
+        Vector3 newPosition = rigidbody.position + animator.deltaPosition;
+
+        // Move Rigidbody using MovePosition for smooth interpolation
+        rigidbody.MovePosition(newPosition);
     }
 }

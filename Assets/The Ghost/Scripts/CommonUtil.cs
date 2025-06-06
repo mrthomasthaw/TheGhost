@@ -64,10 +64,6 @@ public static class CommonUtil
         return string.Join(", ", list);
     }
 
-    public static string DictToString(Dictionary<string, object> dict)
-    {
-        return "{" + string.Join(", ", dict.Select(kv => $"{kv.Key}: {kv.Value}")) + "}";
-    }
 
     public static Transform FindRootTransform(Transform transform)
     {

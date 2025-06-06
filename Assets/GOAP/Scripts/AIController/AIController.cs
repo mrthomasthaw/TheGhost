@@ -9,6 +9,7 @@ using MrThaw.Goap.AISystem;
 using UnityEngine.AI;
 using MrThaw.Goap.AIActions;
 using System;
+using MrThaw.Goap.AIWorldState;
 
 public class AIController : MonoBehaviour
 {
@@ -29,21 +30,22 @@ public class AIController : MonoBehaviour
 
     public PatrolRoute patrolRoute;
 
-    public Dictionary<string, object> WorldState 
-    {
-        get {
-            return worldState;
-        } 
-    }
+    //public Dictionary<string, object> WorldState 
+    //{
+    //    get {
+    //        return worldState;
+    //    } 
+    //}
 
-
+    public AIWorldState AgentWorldState { get { return agentWorldState; } }
     public bool Replan { get => replan; set => replan = value; }
 
     List<AIStateSystem> states = new List<AIStateSystem>();
 
     List<AISystem> systems = new List<AISystem>();
 
-    private Dictionary<string, object> worldState;
+    //private Dictionary<string, object> worldState;
+    private AIWorldState agentWorldState;
     private Animator animator;
     private NavMeshAgent agent;
     private Transform Transform;
@@ -60,6 +62,8 @@ public class AIController : MonoBehaviour
     private WeaponInventoryData inventoryData;
 
     private MrThaw.WeaponInventory weaponInventory;
+
+    public WeaponInventory WeaponInventory { get { return weaponInventory; } }
 
     private WeaponPositionControl weaponPositionControl;
 
@@ -106,7 +110,7 @@ public class AIController : MonoBehaviour
         states.Add(new AIStateSystemAnimate(animator, weaponPositionControl));
         //states.Add(new AIStateSystemHumanLookIK(lookIKProps, animator, Transform));
 
-        states.ForEach(x => x.OnStart());
+        states.ForEach(x => x.OnStart(Blackboard));
 
         Memory = new AIMemory();
         sensorList.Add(new AISensorVision(head, transform, Memory, obstacleLayer));
@@ -120,10 +124,11 @@ public class AIController : MonoBehaviour
         actionList.Add(new AIActionAim());
         actionList.Add(new AIActionFireWeapon());
 
+       
         SetUpWorldStates();
 
         planner = new AIPlanner();
-        planner.SetUp(WorldState, goalList, actionList, Blackboard);
+        planner.SetUp(agentWorldState, goalList, actionList, Blackboard);
 
         Plan.Enqueue(actionList[0]);
 
@@ -134,9 +139,12 @@ public class AIController : MonoBehaviour
 
     private void SetUpWorldStates()
     {
-        worldState = new Dictionary<string, object>();
-        worldState.Add("aiAlertType", EnumType.AIAlertType.Normal);
-        worldState.Add("aim", false);
+        //worldState = new Dictionary<string, object>();
+        //worldState.Add("aiAlertType", EnumType.AIAlertType.Normal);
+        //worldState.Add("aim", false);
+        agentWorldState = new AIWorldState();
+        agentWorldState.Add("aiAlertType", EnumType.AIAlertType.Normal);
+        agentWorldState.Add("aim", false);
     }
 
     // Update is called once per frame
@@ -248,10 +256,13 @@ public class AIController : MonoBehaviour
 
                 Debug.Log("All state completed");
                 currentAction.OnActionComplete(Blackboard); // when the action is completed
+
+                agentWorldState.CopyWorldStates(currentAction.Effects);
                 currentAction = null;
             }
         }
 
+        Debug.Log(agentWorldState.PrintWorldStates());
         //NOTE NEED TO UPDATE WORLD STATES HERE
         
     }

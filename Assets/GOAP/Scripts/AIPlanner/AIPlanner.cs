@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using MrThaw.Goap.AIActions;
+using MrThaw.Goap.AIWorldState;
 
 namespace MrThaw
 {
@@ -12,16 +13,19 @@ namespace MrThaw
 
         public List<AIAction> allActionList = new List<AIAction>();
 
-        public Dictionary<string, object> currentWorldStates;
+        //public Dictionary<string, object> currentWorldStates;
 
         public AIGoal currentGoal;
 
         public AIBlackBoard blackBoard;
 
-        public void SetUp(Dictionary<string, object> worldStates, List<AIGoal> _goalList, List<AIAction> _allActionList, AIBlackBoard blackBoard)
-        {
-            currentWorldStates = new Dictionary<string, object>(worldStates); // These must be a copy from aiController
+        private AIWorldState agentWorldState;
 
+        public void SetUp(AIWorldState _agentWorldState, List<AIGoal> _goalList, List<AIAction> _allActionList, AIBlackBoard blackBoard)
+        {
+            //currentWorldStates = new Dictionary<string, object>(worldStates); // These must be a copy from aiController
+
+            agentWorldState = _agentWorldState;
             goalList = _goalList;
             goalList.ForEach(g => g.SetUp(blackBoard));
 
@@ -56,7 +60,7 @@ namespace MrThaw
             List<AIAction> clonedActionList = new List<AIAction>(allActionList);
 
             List<AIActionNode> leaves = new List<AIActionNode>();
-            AIActionNode rootNode = new AIActionNode(0, null, null, currentWorldStates);
+            AIActionNode rootNode = new AIActionNode(0, null, null, agentWorldState.WorldStates);
             bool foundPath = BuildActionGraph(clonedActionList, leaves, rootNode, currentGoal.EndGoal);
 
             if(! foundPath)
