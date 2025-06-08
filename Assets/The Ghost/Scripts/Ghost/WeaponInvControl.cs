@@ -25,6 +25,10 @@ namespace MrThaw
 
         private bool enableAim;
 
+        public bool debugAim;
+
+        public bool lockHand;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -36,9 +40,11 @@ namespace MrThaw
                 GetComponent<WeaponPositionControl>(), inventoryData);
 
             weaponInventory.SetUp();
+            weaponPositionControl.IKControl.UseCameraDirForAim = true;
 
             cameraWeaponRecoilHandler = FindObjectOfType<CameraWeaponRecoilHandler>();
             aimInputHelper = new AimInputHelper();
+            aimInputHelper.DebugAim = debugAim;
 
             SetUpListenersForAllWeapon();
         }
@@ -46,6 +52,7 @@ namespace MrThaw
         // Update is called once per frame
         void Update()
         {
+
             if (Input.GetButtonDown("NextWeapon"))
                 weaponInventory.SwitchWeapon();
 
@@ -55,7 +62,15 @@ namespace MrThaw
                 weaponInventory.SwitchShoulder();
             }
 
-            aimInputHelper.HandleHipFireAndAimInputs(ref enableAim, Time.deltaTime);
+            if (debugAim) 
+            {
+                enableAim = true;
+            }
+            else
+            {
+                aimInputHelper.HandleHipFireAndAimInputs(ref enableAim, Time.deltaTime);
+            }
+
 
             weaponPositionControl.HandleWeaponAim(enableAim);
             weaponInventory.CurrentWeapon.Shoot(Input.GetButton("Shoot"));

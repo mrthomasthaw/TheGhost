@@ -11,6 +11,7 @@ namespace MrThaw.Goap.AIActions
         public override void SetUp(AIBlackBoard blackBoard)
         {
             base.SetUp(blackBoard);
+            RepeatAction = true;
             Preconditions.Add("aim", true);
 
             Effects.Add("assaultPrimaryThreat", true);

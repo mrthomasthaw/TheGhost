@@ -26,7 +26,9 @@ public class WeaponTargetingSMB : CustomSMB
         if(threat != null)
         {
             weaponPositionControl.HandleWeaponAim(true);
+            Debug.Log("Threat T : " + threat.ThreatT);
             weaponPositionControl.IKControl.SetLookObj(threat.ThreatT);
+            weaponPositionControl.IKControl.SetAimTarget(threat.ThreatT);
         }
     }
 

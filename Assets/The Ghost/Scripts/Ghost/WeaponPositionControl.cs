@@ -48,6 +48,8 @@ namespace MrThaw
 
         private bool aim;
 
+        public bool IkActive;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -59,6 +61,11 @@ namespace MrThaw
         // Update is called once per frame
         void Update()
         {
+            if (! IkActive) 
+            {
+                return;
+            }
+
             switch (shoulder)
             {
                 case ShoulderSetting.Right:
@@ -75,6 +82,7 @@ namespace MrThaw
             if (_currentWeaponHandPositionSetting == null || secondHandHoldingPoint == null)
                 return;
 
+
             leftHandObj.localPosition = _currentWeaponHandPositionSetting.leftShoulderSide.leftHandAimPos;
             leftHandObj.localEulerAngles = _currentWeaponHandPositionSetting.leftShoulderSide.leftHandAimEulerAngle;
 
@@ -89,6 +97,7 @@ namespace MrThaw
         {
             if (_currentWeaponHandPositionSetting == null || secondHandHoldingPoint == null)
                 return;
+
 
             rightHandObj.localPosition = _currentWeaponHandPositionSetting.rightShoulderSide.rightHandAimPos;
             rightHandObj.localEulerAngles = _currentWeaponHandPositionSetting.rightShoulderSide.rightHandAimEulerAngle;

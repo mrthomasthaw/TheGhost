@@ -16,6 +16,8 @@ namespace MrThaw
         public delegate void OnPutDownWeapon();
         public OnPutDownWeapon onPutDownWeapon;
 
+        public bool DebugAim { get; set; }
+
         //public void HandleHipFireAndAimInputs(ref bool aim)
         //{
         //    if (Input.GetButton("Shoot") && !Input.GetButton("PreciseAim")) // Hip Fire 
@@ -45,6 +47,13 @@ namespace MrThaw
 
         public void HandleHipFireAndAimInputs(ref bool aim, float deltaTime)
         {
+            if(DebugAim)
+            {
+                aim = true;
+                HandlePreciseAimState(ref aim, ref this.aimState);
+                return;
+            }
+
             switch (aimState)
             {
                 case CharacterAimState.Idle:
@@ -62,6 +71,13 @@ namespace MrThaw
 
         public void HandleHipFireAndAimInputs(ref bool aim, ref CharacterAimState characterAimState, float deltaTime)
         {
+            if (DebugAim)
+            {
+                aim = true;
+                HandlePreciseAimState(ref aim, ref characterAimState);
+                return;
+            }
+
             switch (characterAimState)
             {
                 case CharacterAimState.Idle:

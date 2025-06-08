@@ -11,6 +11,8 @@ namespace MrThaw.Goap.AIActions
 
         public bool AbortAction { get; set; }
 
+        public bool RepeatAction { get; set; }
+
         public bool RequiredStatesToComplete { get; set; }
 
         public Dictionary<string, object> Preconditions { get; protected set; }

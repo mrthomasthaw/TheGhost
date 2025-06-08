@@ -219,8 +219,15 @@ public class AIController : MonoBehaviour
                 return;
             }
 
+            if(Plan.Peek().RepeatAction)
+            {
+                currentAction = Plan.Peek();
+            }
+            else
+            {
+                currentAction = Plan.Dequeue();
+            }
 
-            currentAction = Plan.Dequeue();
             currentAction.OnActionStart(Blackboard);
             if(! currentAction.AbortAction)
             {

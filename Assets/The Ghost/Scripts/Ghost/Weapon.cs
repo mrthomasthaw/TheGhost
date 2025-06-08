@@ -39,7 +39,9 @@ public class Weapon : MonoBehaviour
     public delegate void OnWeaponShoot();
     public OnWeaponShoot onWeaponShoot;
 
+    [SerializeField] private Rigidbody bulletPrefab;
     [SerializeField] private GameObject muzzleFlashParent;
+    [SerializeField] private GameObject bulletStartingPoint;
     [SerializeField] private ParticleSystem[] particleSystem;
     [SerializeField] private WeaponHandPositionSetting _weaponHandPositionSetting;
 
@@ -79,6 +81,9 @@ public class Weapon : MonoBehaviour
                 onWeaponShoot?.Invoke();
 
                 PlayParticleEffects();
+
+                CreateProjectile();
+
                 _weaponRecoil.StartWeaponRecoil();
                 //TimePressed = 0;
                 _nextBulletLoadingTimer = nextBulletLoadingElapse;
@@ -102,6 +107,13 @@ public class Weapon : MonoBehaviour
         {
             particleSystem[x].Play();
         }
+    }
+
+    private void CreateProjectile()
+    {
+        Rigidbody bullet =  Instantiate(bulletPrefab, bulletStartingPoint.transform.position, bulletStartingPoint.transform.rotation) as Rigidbody;
+        bullet.AddForce(bullet.transform.forward * 1000000 * Time.deltaTime);
+        
     }
 
     public void Shoot(bool input)

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed4469bd649fb7b4a9cc6fb73331e051, type: 3}
+  m_Name: NPC 1 Rifle Weapon Hand Position Setting
+  m_EditorClassIdentifier: 
+  rightWeaponEquipSetting:
+    equipHandPosition: {x: 0.1855424, y: 0.03128754, z: -0.1021671}
+    equipHandEulerAngle: {x: -2.669, y: 86.25101, z: -89.825}
+  leftWeaponEquipSetting:
+    equipHandPosition: {x: -0.1869993, y: -0.02500007, z: 0.1329999}
+    equipHandEulerAngle: {x: -180, y: 88.19, z: 90.08401}
+  rightShoulderSide:
+    rightHandIdlePos: {x: 0, y: 0, z: 0}
+    rightHandIdleEulerAngle: {x: 0, y: 0, z: 0}
+    rightHandAimPos: {x: 0.09, y: -0.021, z: 0.128}
+    rightHandAimEulerAngle: {x: 17.055, y: 28.805, z: -80.104}
+    leftHandIdlePos: {x: 0, y: 0, z: 0}
+    leftHandIdleEulerAngle: {x: 0, y: 0, z: 0}
+    leftHandAimPos: {x: -0.0462, y: -0.0495, z: 0.133}
+    leftHandAimEulerAngle: {x: 13.211, y: 26.724, z: 155.585}
+  leftShoulderSide:
+    rightHandIdlePos: {x: 0, y: 0, z: 0}
+    rightHandIdleEulerAngle: {x: 0, y: 0, z: 0}
+    rightHandAimPos: {x: 0.0299, y: -0.0502, z: 0.1122}
+    rightHandAimEulerAngle: {x: 6.996, y: -24.454, z: -165.005}
+    leftHandIdlePos: {x: 0, y: 0, z: 0}
+    leftHandIdleEulerAngle: {x: 0, y: 0, z: 0}
+    leftHandAimPos: {x: -0.049, y: -0.035, z: 0.157}
+    leftHandAimEulerAngle: {x: 0.07300001, y: -0.395, z: -273.746}
