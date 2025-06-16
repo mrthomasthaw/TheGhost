@@ -88,8 +88,6 @@ public class Weapon : MonoBehaviour
                 //TimePressed = 0;
                 _nextBulletLoadingTimer = nextBulletLoadingElapse;
             }
-
-            pullTrigger = false;
         }
         else
         {

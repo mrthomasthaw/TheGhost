@@ -96,7 +96,7 @@ namespace MrThaw
 
                 case AIAnimationDict.AnimationDict.Fire:
                     Debug.Log("Shoot!!!!!");
-                    weaponTargetingSmb.FireWeapon();
+
                     //weaponSmb.OnFireActivated();
                     break;
 

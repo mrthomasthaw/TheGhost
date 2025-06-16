@@ -132,8 +132,12 @@ namespace MrThaw
             }
             else
             {
-                aimDirection = aimTarget.position;
-                aimDirection.y -= 0.2f;
+                if (aimTarget != null) 
+                {
+                    aimDirection = aimTarget.position;
+                    aimDirection.y -= 0.2f;
+                }
+                
             }
 
             Debug.Log(currentAimPivotObj.name);

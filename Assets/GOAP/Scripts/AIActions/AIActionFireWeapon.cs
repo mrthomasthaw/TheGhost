@@ -6,7 +6,7 @@ namespace MrThaw.Goap.AIActions
 {
     public class AIActionFireWeapon : AIAction
     {
-        private AIBBDAnimate fireWeaponBBD = new AIBBDAnimate(AIAnimationDict.AnimationDict.Fire);
+        private AIBBDSMBFireWeapon bbDFireWeapon = new AIBBDSMBFireWeapon(true);
 
         public override void SetUp(AIBlackBoard blackBoard)
         {
@@ -19,7 +19,7 @@ namespace MrThaw.Goap.AIActions
 
         public override void OnActionStart(AIBlackBoard blackBoard)
         {
-            blackBoard.Add(fireWeaponBBD);
+            blackBoard.Add(bbDFireWeapon);
         }
     }
 }

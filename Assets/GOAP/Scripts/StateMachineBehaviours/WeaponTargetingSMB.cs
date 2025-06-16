@@ -10,6 +10,12 @@ public class WeaponTargetingSMB : CustomSMB
 
     private WeaponPositionControl weaponPositionControl;
     private WeaponInventory weaponInventory;
+    private AIBBDSelectedPrimaryThreat threat;
+    private AIBBDSMBFireWeapon bbBFireWeapon;
+    private float fireTimer = 0;
+    private float pauseTimer = 0;
+    private float fireTimerMax;
+    private float pauseTimerMax;
 
 
     public override void SetUp(Animator animator, AIBlackBoard blackBoard)
@@ -17,11 +23,14 @@ public class WeaponTargetingSMB : CustomSMB
         base.SetUp(animator, blackBoard);
         weaponPositionControl = animator.GetComponent<WeaponPositionControl>();
         weaponInventory = animator.GetComponent<AIController>().WeaponInventory;
+
+        fireTimerMax = UnityEngine.Random.Range(1.6f, 4f);
+        pauseTimerMax = UnityEngine.Random.Range(0.6f, 2f);
     }
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        AIBBDSelectedPrimaryThreat threat = blackBoard.GetBBData<AIBBDSelectedPrimaryThreat>();
+        threat = blackBoard.GetBBData<AIBBDSelectedPrimaryThreat>();
 
         if(threat != null)
         {
@@ -36,10 +45,48 @@ public class WeaponTargetingSMB : CustomSMB
     {
         weaponPositionControl.HandleWeaponAim(false);
         weaponPositionControl.IKControl.SetLookObj(null);
+        blackBoard.RemoveBBData(bbBFireWeapon);
     }
 
-    public void FireWeapon()
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        weaponInventory.CurrentWeapon.Shoot(true);
+        if(threat != null)
+        {
+            if (bbBFireWeapon != null && bbBFireWeapon.FireWeapon)
+            {
+                if (fireTimer < fireTimerMax)
+                {
+                    fireTimer += Time.deltaTime;
+                    FireWeapon(true);
+                }
+                else if (pauseTimer < pauseTimerMax)
+                {
+                    pauseTimer += Time.deltaTime;
+                    FireWeapon(false);
+                }
+                else
+                {
+                    fireTimer = 0;
+                    pauseTimer = 0;
+
+                    fireTimerMax = UnityEngine.Random.Range(1.6f, 4f);
+                    pauseTimerMax = UnityEngine.Random.Range(0.6f, 2f);
+                }
+            }
+            else
+            {
+                bbBFireWeapon = blackBoard.GetBBData<AIBBDSMBFireWeapon>();
+                FireWeapon(false);
+            }
+        }
+        else
+        {
+            FireWeapon(false);
+        }
+    }
+
+    public void FireWeapon(bool shoot)
+    {
+        weaponInventory.CurrentWeapon.Shoot(shoot);
     }
 }
