@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace MrThaw
@@ -18,12 +19,26 @@ namespace MrThaw
         private Transform rShoulderBoneT, lShoulderBoneT;
         private Transform aimTarget;
         private Vector3 aimDirection;
+        private bool death = false;
+
+        [SerializeField]
+        private DeathEventSO deathEventSO;
 
         private float rHandWeight, lHandWeight;
 
         public bool UseCameraDirForAim;
         public float RHandWeight { get => rHandWeight; set => rHandWeight = value; }
         public float LHandWeight { get => lHandWeight; set => lHandWeight = value; }
+
+        private void OnEnable()
+        {
+            deathEventSO.OnEventRaised += OnDeath;
+        }
+
+        private void OnDisable()
+        {
+            deathEventSO.OnEventRaised -= OnDeath;
+        }
 
         void Awake()
         {
@@ -46,11 +61,13 @@ namespace MrThaw
 
         private void Update()
         {
+            if (death) return;
             UpdateAimDirection(currentAimPivotObj);
         }
 
         private void OnAnimatorMove()
         {
+            if (death) return;
             HandleAimPivotObjRotationAndPosition(aimPivotR, rShoulderBoneT);
             HandleAimPivotObjRotationAndPosition(aimPivotL, lShoulderBoneT);
         }
@@ -60,7 +77,7 @@ namespace MrThaw
         //a callback for calculating IK
         void OnAnimatorIK()
         {
-            if (animator)
+            if (!death && animator)
             {
 
                 //if the IK is active, set the position and rotation directly to the goal. 
@@ -135,7 +152,7 @@ namespace MrThaw
                 if (aimTarget != null) 
                 {
                     aimDirection = aimTarget.position;
-                    aimDirection.y -= 0.2f;
+                    aimDirection.y -= 0.6f;
                 }
                 
             }
@@ -169,6 +186,12 @@ namespace MrThaw
         public void SetAimTarget(Transform aimTarget)
         {
             this.aimTarget = aimTarget;
+        }
+
+        public void OnDeath(GameObject sender)
+        {
+            if (sender == this.gameObject)
+                death = true;
         }
 
     }

@@ -8,17 +8,28 @@ public class AnimateMovement : MonoBehaviour
     [SerializeField] ShoulderSetting shoulder;
     [SerializeField] CharacterAimState aimState;
     [SerializeField] private CrouchEventSO crouchEvent;
+    [SerializeField] private DeathEventSO deathEvent;
     Animator animator;
     AimInputHelper aimInputHelper;
 
     public float H { get; private set; }
     public float V { get; private set; }
-    float speedMultiplier;
-    bool precisionAim;
-    bool inOtherState;
+    private float speedMultiplier;
+    private bool precisionAim;
+    private bool inOtherState;
+    
+    [SerializeField]private bool death = false;
 
-    private void OnEnable() => crouchEvent.OnEventRaised += OnOtherAction;
-    private void OnDisable() => crouchEvent.OnEventRaised -= OnOtherAction;
+    private void OnEnable() 
+    { 
+        crouchEvent.OnEventRaised += OnOtherAction;
+        deathEvent.OnEventRaised += OnDeath;
+    }
+    private void OnDisable() 
+    { 
+        crouchEvent.OnEventRaised -= OnOtherAction;
+        deathEvent.OnEventRaised -= OnDeath;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +45,8 @@ public class AnimateMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(death) return;
+
         aimInputHelper.HandleHipFireAndAimInputs(ref precisionAim, ref aimState, Time.deltaTime);
 
         AdaptMoveSpeedOnAimState();
@@ -109,5 +122,9 @@ public class AnimateMovement : MonoBehaviour
             inOtherState = state;
     }
 
-
+    public void OnDeath(GameObject sender)
+    {
+        if(sender == this.gameObject)
+            death = true;
+    }
 }

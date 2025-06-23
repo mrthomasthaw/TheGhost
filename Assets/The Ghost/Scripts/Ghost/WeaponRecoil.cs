@@ -7,10 +7,27 @@ public class WeaponRecoil : MonoBehaviour
     [SerializeField] AnimationCurve animationCurve;
     [SerializeField] Transform currentAimPivot, handIkObj;
 
+    [SerializeField]
+    private DeathEventSO deathEventSO;
+
+
     public Vector3 baseHandPos;
     public bool isRecoilStart;
     public float recoilTimer;
     public float recoilDuration;
+
+    private bool death = false;
+
+    private void OnEnable()
+    {
+        deathEventSO.OnEventRaised += OnDeath;
+    }
+
+    private void OnDisable()
+    {
+        deathEventSO.OnEventRaised += OnDeath;
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +39,8 @@ public class WeaponRecoil : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (death) return;
+
         if (recoilTimer >= 2f)
         {
             isRecoilStart = false;
@@ -53,5 +72,11 @@ public class WeaponRecoil : MonoBehaviour
         this.currentAimPivot = currentAimPivot;
         this.handIkObj = handIkObj;
         baseHandPos = handIkObj.localPosition;
+    }
+
+    public void OnDeath(GameObject sender)
+    {
+        if (sender == this.gameObject)
+            death = true;
     }
 }

@@ -13,6 +13,9 @@ namespace MrThaw
         [SerializeField]
         public WeaponInventoryData inventoryData;
 
+        [SerializeField]
+        private DeathEventSO deathEventSO;
+
         private WeaponInventory weaponInventory;
 
         private WeaponPositionControl weaponPositionControl;
@@ -25,9 +28,22 @@ namespace MrThaw
 
         private bool enableAim;
 
+        private bool death;
+
         public bool debugAim;
 
         public bool lockHand;
+
+        private void OnEnable()
+        {
+            deathEventSO.OnEventRaised += OnDeath;
+        }
+
+        private void OnDisable()
+        {
+            deathEventSO.OnEventRaised += OnDeath;
+        }
+
 
         // Start is called before the first frame update
         void Start()
@@ -52,6 +68,7 @@ namespace MrThaw
         // Update is called once per frame
         void Update()
         {
+            if (death) return;
 
             if (Input.GetButtonDown("NextWeapon"))
                 weaponInventory.SwitchWeapon();
@@ -87,6 +104,12 @@ namespace MrThaw
                     w.onWeaponShoot += cameraWeaponRecoilHandler.CalculateRecoil;
                 }
             });
+        }
+
+        public void OnDeath(GameObject sender)
+        {
+            if (sender == this.gameObject)
+                death = true;
         }
     }
 }

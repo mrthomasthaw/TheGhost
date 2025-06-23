@@ -21,5 +21,11 @@ namespace MrThaw.Goap.AIActions
         {
             blackBoard.Add(bbDFireWeapon);
         }
+
+        public override bool OnActionPerform(AIBlackBoard blackBoard)
+        {
+            
+            return base.OnActionPerform(blackBoard);
+        }
     }
 }

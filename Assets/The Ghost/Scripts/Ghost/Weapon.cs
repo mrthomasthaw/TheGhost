@@ -44,10 +44,24 @@ public class Weapon : MonoBehaviour
     [SerializeField] private GameObject bulletStartingPoint;
     [SerializeField] private ParticleSystem[] particleSystem;
     [SerializeField] private WeaponHandPositionSetting _weaponHandPositionSetting;
+    [SerializeField] private DeathEventSO deathEventSO;
+
 
     public bool Equip { get; set; }
 
     private bool pullTrigger;
+
+    private bool death = false;
+
+    private void OnEnable()
+    {
+        deathEventSO.OnEventRaised += OnDeath;
+    }
+
+    private void OnDisable()
+    {
+        deathEventSO.OnEventRaised += OnDeath;
+    }
 
     // Start is called before the first frame update
     void Awake()
@@ -61,7 +75,7 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (! Equip) return;
+        if (death || ! Equip) return;
 
         if(pullTrigger)
         {
@@ -117,6 +131,12 @@ public class Weapon : MonoBehaviour
     public void Shoot(bool input)
     {
         pullTrigger = input;
+    }
+
+    public void OnDeath(GameObject sender)
+    {
+        if (sender == this.gameObject)
+            death = true;
     }
 
 }

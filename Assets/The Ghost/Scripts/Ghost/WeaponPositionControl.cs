@@ -11,6 +11,7 @@ namespace MrThaw
         public Transform secondHandHoldingPoint;
 
 
+
         public Weapon RightWeapon { get; set; }
         public Weapon LeftWeapon { get; set; }
 
@@ -20,6 +21,9 @@ namespace MrThaw
         }
 
         private Transform rightWeaponT, leftWeaponT;
+
+        [SerializeField]
+        private DeathEventSO deathEventSO;
 
         [SerializeField] public ShoulderSetting shoulder;
 
@@ -48,7 +52,19 @@ namespace MrThaw
 
         private bool aim;
 
+        private bool death;
+
         public bool IkActive;
+
+        private void OnEnable()
+        {
+            deathEventSO.OnEventRaised += OnDeath;
+        }
+
+        private void OnDisable()
+        {
+            deathEventSO.OnEventRaised -= OnDeath;
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -61,7 +77,8 @@ namespace MrThaw
         // Update is called once per frame
         void Update()
         {
-            if (! IkActive) 
+       
+            if (death || ! IkActive) 
             {
                 return;
             }
@@ -196,6 +213,12 @@ namespace MrThaw
                     iKControl.RHandWeight = 1f;
                 }                   
             }
+        }
+
+        public void OnDeath(GameObject sender)
+        {
+            if (sender == this.gameObject)
+                death = true;
         }
 
     }

@@ -11,6 +11,7 @@ public class TargetableBodyPart : MonoBehaviour
     private void Awake()
     {
         hitLayer = LayerMask.GetMask("Bullet");
+        this.gameObject.layer = LayerMask.NameToLayer("BodyPart");
     }
 
     private void OnTriggerEnter(Collider other)
