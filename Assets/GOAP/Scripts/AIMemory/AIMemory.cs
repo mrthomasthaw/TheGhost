@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 
 namespace MrThaw.Goap.AIMemory
@@ -38,7 +37,7 @@ namespace MrThaw.Goap.AIMemory
         public List<T> GetAllMemoryDataByType<T>(EnumType.AIMemoryKey key) where T : AIMemoryData
         {
             var container = GetContainer(key);
-            if (container == null) return new List<T>();
+            if (container == null) return EmptyList<T>.Value;
             return container.DataList.OfType<T>().ToList();
         }
 

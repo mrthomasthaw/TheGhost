@@ -131,3 +131,8 @@ public static class CommonUtil
         return true;
     }
 }
+
+public static class EmptyList<T>
+{
+    public static List<T> Value { get; } = new List<T>();
+}

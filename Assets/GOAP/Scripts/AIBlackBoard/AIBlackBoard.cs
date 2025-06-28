@@ -32,7 +32,7 @@ namespace MrThaw
         {
             var container = GetContainer(key);
             if (container == null)
-                return null;
+                return EmptyList<T>.Value;
 
             return container.DataList.OfType<T>().ToList();
         }
