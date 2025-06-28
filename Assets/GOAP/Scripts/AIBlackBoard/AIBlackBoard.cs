@@ -18,9 +18,7 @@ namespace MrThaw
             dataDict = new Dictionary<EnumType.AIBlackBoardKey, object>();
         }
 
-        /// <summary>
-        /// Make sure to find with specific data type (finding with base class not allow)
-        /// </summary>
+
         public T GetOneBBData<T>(EnumType.AIBlackBoardKey key) where T : AIBlackBoardData
         {
             var container = GetContainer(key);
@@ -36,7 +34,7 @@ namespace MrThaw
             if (container == null)
                 return null;
 
-            return container.DataList as List<T>;
+            return container.DataList.OfType<T>().ToList();
         }
 
         public void AddData<T>(T data) where T : AIBlackBoardData

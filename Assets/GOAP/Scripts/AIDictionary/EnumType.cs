@@ -51,5 +51,10 @@ namespace MrThaw
             PatrolRoute,
             OverallDamageToBodyConfidence
         }
+
+        public enum AIMemoryKey
+        {
+            ThreatInfo,
+        }
     }
 }

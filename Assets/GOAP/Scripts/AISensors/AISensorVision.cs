@@ -27,23 +27,7 @@ namespace MrThaw.Goap.AISensors
         public override void OnUpdate()
         {
             //bug.Log("Before remove : " + CommonUtil.StringJoin(memory.Data));
-            memory.Data.RemoveAll(d =>
-            {
-                if (d is AIInfoThreat threat)
-                {
-                    if (Vector3.Distance(aiHeadT.position, threat.TargetTransform.position) > sightRadius)
-                        return true;
-
-                    RaycastHit hitInfo;
-                    // Here you can check properties of 'threat'
-                    if (TargetBehindObstacle(aiHeadT, threat.TargetTransform, out hitInfo))
-                    {
-                        //Debug.Log("hit the obstacle");
-                        return true; // remove this item
-                    }
-                }
-                return false; // keep this item
-            });
+            memory.RemoveAllIf(CheckInvalidLineOfSightTargets(), EnumType.AIMemoryKey.ThreatInfo);
 
             //Debug.Log("After remove : " + CommonUtil.StringJoin(memory.Data));
 
@@ -51,7 +35,7 @@ namespace MrThaw.Goap.AISensors
             Collider[] cols = Physics.OverlapSphere(aiHeadT.position, sightRadius, LayerMask.GetMask("Human"));
 
             int scoreBonus = 0;
-            for(int x = 0; x < cols.Length; x++)
+            for (int x = 0; x < cols.Length; x++)
             {
                 Vector3 dir = cols[x].transform.position - aiHeadT.position;
 
@@ -62,7 +46,7 @@ namespace MrThaw.Goap.AISensors
                 //Debug.Log("Scanned colider " + cols[x].name);
 
                 //Debug.DrawLine(cols[x].transform.position, cols[x].transform.position + Vector3.up * 2, Color.black);
-                if(targetBehindObstacle)
+                if (targetBehindObstacle)
                 {
                     //Debug.Log("hit the obstacle " + hitInfo.collider.name);
                     continue;
@@ -80,9 +64,9 @@ namespace MrThaw.Goap.AISensors
                 score += scoreBonus;
 
                 AIInfoThreat threatInfo = memory.GetThreatInfoByTransform(cols[x].transform);
-                if(threatInfo == null) // create info
+                if (threatInfo == null) // create info
                 {
-                    memory.Data.Add(new AIInfoThreat()
+                    memory.AddData(new AIInfoThreat()
                     {
                         TargetTransform = cols[x].transform,
                         Score = score
@@ -95,6 +79,28 @@ namespace MrThaw.Goap.AISensors
             }
         }
 
+        private System.Predicate<AIMemoryData> CheckInvalidLineOfSightTargets()
+        {
+            return t =>
+            {
+                Debug.Log(t.ToString());
+                if (t is AIInfoThreat threat)
+                {
+                    Debug.Log(t.ToString());
+                    if (Vector3.Distance(aiHeadT.position, threat.TargetTransform.position) > sightRadius)
+                        return true;
+
+                    RaycastHit hitInfo;
+                    // Here you can check properties of 'threat'
+                    if (TargetBehindObstacle(aiHeadT, threat.TargetTransform, out hitInfo))
+                    {
+                        //Debug.Log("hit the obstacle");
+                        return true; // remove this item
+                    }
+                }
+                return false; // keep this item
+            };
+        }
 
         private bool TargetBehindObstacle(Transform source, Transform destination, out RaycastHit hitInfo)
         {

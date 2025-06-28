@@ -8,6 +8,8 @@ namespace MrThaw.Goap.AIMemory.AIInfo
     {
         public Transform TargetTransform { get; set; }
 
+        public override EnumType.AIMemoryKey Key => EnumType.AIMemoryKey.ThreatInfo;
+
         public override bool Equals(object obj)
         {
             return obj is AIInfoThreat threat &&

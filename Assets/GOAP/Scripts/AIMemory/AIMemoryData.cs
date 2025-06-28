@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace MrThaw.Goap.AIMemory
 {
-    public class AIMemoryData
+    public abstract class AIMemoryData
     {
+        public abstract EnumType.AIMemoryKey Key { get; }
+
         public int Score { get; set; }
     }
 }

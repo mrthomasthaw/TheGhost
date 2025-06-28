@@ -27,7 +27,8 @@ namespace MrThaw.Goap.AISystem
 
         public override void OnUpdate(AIController aIController)
         {
-            List<AIInfoThreat> threatInfoList = memory.Data.OfType<AIInfoThreat>().ToList();
+            List<AIInfoThreat> threatInfoList = memory.GetAllMemoryDataByType<AIInfoThreat>
+                (EnumType.AIMemoryKey.ThreatInfo).ToList();
 
             if (threatInfoList.Count == 0)
             {
