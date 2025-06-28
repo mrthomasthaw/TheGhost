@@ -19,12 +19,21 @@ namespace MrThaw
         private Transform rShoulderBoneT, lShoulderBoneT;
         private Transform aimTarget;
         private Vector3 aimDirection;
+        private Quaternion aimPivotLookRotation;
         private bool death = false;
 
         [SerializeField]
         private DeathEventSO deathEventSO;
 
+        [SerializeField]
+        private float aimDirectionOffset;
+
+        [SerializeField]
+        private float aimYOffset;
+
         private float rHandWeight, lHandWeight;
+
+
 
         public bool UseCameraDirForAim;
         public float RHandWeight { get => rHandWeight; set => rHandWeight = value; }
@@ -127,13 +136,14 @@ namespace MrThaw
         {
             aimPivot.position = shoulderTransform.position;
 
-            Vector3 lookDir = aimDirection - aimPivot.position;
-            lookDir.Normalize();
+            //Vector3 lookDir = aimDirection - aimPivot.position;
+            //lookDir.Normalize();
 
-            Debug.DrawRay(aimPivot.position, lookDir, Color.red);
+            //Debug.DrawRay(aimPivot.position, lookDir, Color.red);
 
-            Quaternion lookRot = Quaternion.LookRotation(lookDir);
-            aimPivot.rotation = Quaternion.Slerp(aimPivot.rotation, lookRot, Time.deltaTime * 600);
+            //Quaternion lookRot = Quaternion.LookRotation(lookDir);
+            //aimPivot.rotation = Quaternion.Slerp(aimPivot.rotation, lookRot, Time.deltaTime * 600);
+            aimPivot.rotation = aimPivotLookRotation;
         }
 
         void UpdateAimDirection(Transform aimPivot)
@@ -145,14 +155,40 @@ namespace MrThaw
                 ray = new Ray(cameraT.position, cameraT.forward);
 
                 aimDirection = ray.GetPoint(30);
+
+                Vector3 lookDir = aimDirection - aimPivot.position;
+                lookDir.Normalize();
+
+                Debug.DrawRay(aimPivot.position, lookDir, Color.red);
+
+                Quaternion lookRot = Quaternion.LookRotation(lookDir);
+                
+                aimPivotLookRotation = Quaternion.Slerp(aimPivot.rotation, lookRot, Time.deltaTime * 600);
                 //Debug.DrawRay(ray.origin, aimDirection, Color.red);
             }
             else
             {
                 if (aimTarget != null) 
                 {
-                    aimDirection = aimTarget.position;
-                    aimDirection.y -= 0.6f;
+                    Vector3 targetDir = (aimTarget.position - aimPivot.position).normalized;
+
+                    // Scale vertical offset with distance (or some curve)
+                    float verticalOffset = Vector3.Distance(aimTarget.position, aimPivot.position) * -0.15f;
+
+                    aimDirection = aimTarget.position + targetDir * aimDirectionOffset;
+                    aimDirection.y += verticalOffset;
+
+                    Vector3 lookDir = (aimDirection - aimPivot.position).normalized;
+
+                    
+
+                    Debug.DrawRay(aimPivot.position, (aimDirection - aimPivot.position).normalized * 5f, Color.red);
+
+
+                    Quaternion lookRot = Quaternion.LookRotation(lookDir);
+
+
+                    aimPivotLookRotation = Quaternion.Slerp(aimPivot.rotation, lookRot, Time.deltaTime * 600);
                 }
                 
             }
