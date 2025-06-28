@@ -6,6 +6,7 @@ namespace MrThaw
 {
     public class AIBBDTurnTo : AIBlackBoardData
     {
+        public override EnumType.AIBlackBoardKey Key => EnumType.AIBlackBoardKey.TurnTo;
     }
 
     public class AIBBDTurnToPosition : AIBBDTurnTo

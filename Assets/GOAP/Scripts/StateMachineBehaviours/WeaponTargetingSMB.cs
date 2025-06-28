@@ -30,7 +30,7 @@ public class WeaponTargetingSMB : CustomSMB
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        threat = blackBoard.GetBBData<AIBBDSelectedPrimaryThreat>();
+        threat = blackBoard.GetOneBBData<AIBBDSelectedPrimaryThreat>(EnumType.AIBlackBoardKey.SelectedPrimaryThreat);
 
         if(threat != null)
         {
@@ -75,7 +75,7 @@ public class WeaponTargetingSMB : CustomSMB
             }
             else
             {
-                bbBFireWeapon = blackBoard.GetBBData<AIBBDSMBFireWeapon>();
+                bbBFireWeapon = blackBoard.GetOneBBData<AIBBDSMBFireWeapon>(EnumType.AIBlackBoardKey.FireWeapon);
                 FireWeapon(false);
             }
         }

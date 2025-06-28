@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,73 +9,93 @@ namespace MrThaw
 {
     public class AIBlackBoard
     {
-        private List<AIBlackBoardData> datas;
+        private Dictionary<EnumType.AIBlackBoardKey, object> dataDict;
 
-        public List<AIBlackBoardData> Datas { get => datas; }
-
+        public Dictionary<EnumType.AIBlackBoardKey, object> DataDict { get { return dataDict; } }
 
         public AIBlackBoard()
         {
-            datas = new List<AIBlackBoardData>();
+            dataDict = new Dictionary<EnumType.AIBlackBoardKey, object>();
+        }
+
+        /// <summary>
+        /// Make sure to find with specific data type (finding with base class not allow)
+        /// </summary>
+        public T GetOneBBData<T>(EnumType.AIBlackBoardKey key) where T : AIBlackBoardData
+        {
+            var container = GetContainer(key);
+            if (container == null)
+                return null;
+
+            return container.GetBBData() as T;
+        }
+
+        public List<T> GetAllBBDataByType<T>(EnumType.AIBlackBoardKey key) where T : AIBlackBoardData
+        {
+            var container = GetContainer(key);
+            if (container == null)
+                return null;
+
+            return container.DataList as List<T>;
+        }
+
+        public void AddData<T>(T data) where T : AIBlackBoardData
+        {
+            EnumType.AIBlackBoardKey key = data.Key;
+            if (!dataDict.ContainsKey(key))
+                dataDict[key] = new AIBlackBoardDataContainer();
+
+            var container = dataDict[key] as AIBlackBoardDataContainer;
+            container.DataList.Add(data);
+        }
+
+        public void RemoveBBData<T>(T bbdata) where T : AIBlackBoardData
+        {
+            var container = GetContainer(bbdata.Key);
+            if (container == null) return;
+            container.RemoveBBData(bbdata);
         }
 
 
-        public void RemoveBBData(AIBlackBoardData bbdata)
+        public AIBlackBoardDataContainer GetContainer(EnumType.AIBlackBoardKey key)
         {
-            if (datas.Contains(bbdata))
-                datas.Remove(bbdata);
-        }
-
-        public void RemoveAll<T>() where T : AIBlackBoardData
-        {
-            var rmvDatas = datas.FindAll(x => x.GetType() == typeof(T));
-            foreach (var rmv in rmvDatas)
+            if(dataDict.TryGetValue(key, out var container))
             {
-                RemoveBBData(rmv);
+                return container as AIBlackBoardDataContainer;
             }
+
+            return null;    
         }
 
-        public void RemoveFirstBBData<T>() where T : AIBlackBoardData
+        public void RemoveAllByType<T>(EnumType.AIBlackBoardKey key) where T : AIBlackBoardData
         {
-            for (int i = 0; i < datas.Count; i++)
-            {
-                if (datas[i].GetType() == typeof(T))
-                {
-                    RemoveBBData(datas[i]);
-                    break;
-                }
-            }
+            var container = GetContainer(key);
+            if(container != null)
+                container.Clear();
         }
 
-        public T GetBBData<T>() where T : AIBlackBoardData
+        public void PrintDataDict()
         {
-            return datas.OfType<T>().LastOrDefault();
+            Debug.Log(CommonUtil.StringJoin(dataDict));
         }
 
-        public List<T> GetAllBBDatasOfType<T>() where T : AIBlackBoardData
+
+        public void RemoveFirstBBData<T>(EnumType.AIBlackBoardKey key) where T : AIBlackBoardData
         {
-            return datas.OfType<T>().ToList();
+            var container = GetContainer(key);
+            if(container != null)
+                container.DataList.RemoveAt(0);
         }
 
-        public AIBlackBoardData GetWithIndex(int i)
+
+        public bool ContainsData<T>(EnumType.AIBlackBoardKey key) where T : AIBlackBoardData
         {
-            return datas[i];
+            var container = GetContainer(key);
+            if (container == null)
+                return false;
+
+            return container.ContainsData();
         }
 
-        public void Add<T>(T bbdata) where T : AIBlackBoardData
-        {
-            datas.Add(bbdata);
-        }
-
-        public int Count
-        {
-            get { return datas.Count; }
-        }
-
-
-        public bool ContainsData<T>() where T : AIBlackBoardData
-        {
-            return GetBBData<T>() != null;
-        }
     }
 }

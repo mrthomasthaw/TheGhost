@@ -27,10 +27,11 @@ namespace MrThaw.Goap.AIActions
 
             Effects.Add("secureTheArea", true);
 
-            if (blackBoard.GetBBData<AIBBDPatrolRoute>() == null || blackBoard.GetBBData<AIBBDPatrolRoute>().PatrolRoute == null)
+
+            if (blackBoard.GetOneBBData<AIBBDPatrolRoute>(EnumType.AIBlackBoardKey.PatrolRoute) == null || blackBoard.GetOneBBData<AIBBDPatrolRoute>(EnumType.AIBlackBoardKey.PatrolRoute).PatrolRoute == null)
                 idleActivateChancePerc = 100;
             else
-                patrolPoints = blackBoard.GetBBData<AIBBDPatrolRoute>().PatrolRoute.patrolPoints;
+                patrolPoints = blackBoard.GetOneBBData<AIBBDPatrolRoute>(EnumType.AIBlackBoardKey.PatrolRoute).PatrolRoute.patrolPoints;
         }
 
 
@@ -48,7 +49,7 @@ namespace MrThaw.Goap.AIActions
                     true, true);
 
                 
-                blackBoard.Add(moveToBbD);
+                blackBoard.AddData(moveToBbD);
                 isIdleActive = false;
             }
             else

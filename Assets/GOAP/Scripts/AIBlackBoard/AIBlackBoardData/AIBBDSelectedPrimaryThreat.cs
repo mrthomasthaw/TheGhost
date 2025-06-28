@@ -10,6 +10,8 @@ namespace MrThaw
         public string Name { get; set; }
         public Transform ThreatT { get; set; }
 
+        public override EnumType.AIBlackBoardKey Key => EnumType.AIBlackBoardKey.SelectedPrimaryThreat;
+
         public AIBBDSelectedPrimaryThreat()
         {
 

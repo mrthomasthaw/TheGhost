@@ -39,7 +39,7 @@ namespace MrThaw
 
         public override void OnActionActivate(AIBlackBoard blackBoard)
         {
-            AIBBDLookAt lookAtBBD = blackBoard.GetBBData<AIBBDLookAt>();
+            AIBBDLookAt lookAtBBD = blackBoard.GetOneBBData<AIBBDLookAt>(EnumType.AIBlackBoardKey.LookAt);
             SetLookAtToStartLook(lookAtBBD, blackBoard);
         }
 
@@ -141,7 +141,7 @@ namespace MrThaw
 
         public override void OnActionExit(AIBlackBoard blackBoard)
         {
-            blackBoard.RemoveFirstBBData<AIBBDLookAt>();
+            blackBoard.RemoveFirstBBData<AIBBDLookAt>(EnumType.AIBlackBoardKey.LookAt);
             // Reset
             lookAtTransform = null;
             //currentReferenceAngle = 0;

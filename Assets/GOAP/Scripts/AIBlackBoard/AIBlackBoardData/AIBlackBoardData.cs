@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace MrThaw
 {
-    public class AIBlackBoardData
+    public abstract class AIBlackBoardData
     {
-
+        public abstract EnumType.AIBlackBoardKey Key { get; }
     }
 }

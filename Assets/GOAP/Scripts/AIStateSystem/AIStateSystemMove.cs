@@ -55,8 +55,8 @@ namespace MrThaw
         {
             //Debug.Log(CommonUtil.stringJoin(blackBoard.Datas));
             reachTolerance = defaultReachTolerance;
-            AIBBDMoveTo moveToBBD = blackBoard.GetBBData<AIBBDMoveTo>();
-            AIBBDTurnTo turnToBBD = blackBoard.GetBBData<AIBBDTurnTo>();
+            AIBBDMoveTo moveToBBD = blackBoard.GetOneBBData<AIBBDMoveTo>(EnumType.AIBlackBoardKey.MoveTo);
+            AIBBDTurnTo turnToBBD = blackBoard.GetOneBBData<AIBBDTurnTo>(EnumType.AIBlackBoardKey.TurnTo);
             SetMoveNTurnToStartMove(moveToBBD, turnToBBD, blackBoard);
             if (moveToTransform)
                 moveToPosition = moveToTransform.position;

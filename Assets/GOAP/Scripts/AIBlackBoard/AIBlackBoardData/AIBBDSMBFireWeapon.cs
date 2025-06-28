@@ -7,6 +7,8 @@ namespace MrThaw {
     {
         public bool FireWeapon { get; private set; }
 
+        public override EnumType.AIBlackBoardKey Key => EnumType.AIBlackBoardKey.FireWeapon;
+
         public AIBBDSMBFireWeapon() 
         { 
 
@@ -15,6 +17,7 @@ namespace MrThaw {
         public AIBBDSMBFireWeapon(bool fireWeapon)
         {
             this.FireWeapon = fireWeapon;
+
         }
     }
 }

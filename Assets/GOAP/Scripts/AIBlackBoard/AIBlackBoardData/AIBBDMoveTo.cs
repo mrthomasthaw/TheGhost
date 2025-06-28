@@ -11,6 +11,8 @@ namespace MrThaw
         public bool RMTurn { get; set; }
         public bool RMMove { get; set; }
 
+        public override EnumType.AIBlackBoardKey Key => EnumType.AIBlackBoardKey.MoveTo;
+
         public AIBBDMoveTo(EnumType.AIMoveType _moveType, float _reachTolerance, bool useRMTurn = true, bool useRMMove = true)
         {
             MoveType = _moveType;

@@ -7,6 +7,8 @@ namespace MrThaw
     public class AIBBDLookAt : AIBlackBoardData
     {
         public bool HeadOnlyLook { get; private set;}
+
+        public override EnumType.AIBlackBoardKey Key => EnumType.AIBlackBoardKey.LookAt;
     }
 
     public class AIBBDLookAtPosition : AIBBDLookAt

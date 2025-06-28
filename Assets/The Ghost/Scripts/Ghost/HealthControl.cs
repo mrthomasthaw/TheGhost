@@ -15,7 +15,10 @@ public class HealthControl : MonoBehaviour
     [SerializeField]
     private DeathEventSO deathEventSO;
 
-    public int health;
+    [SerializeField]
+    private int health;
+
+    public bool IsDeath { get; private set; }
 
     private void Awake()
     {
@@ -74,6 +77,7 @@ public class HealthControl : MonoBehaviour
 
     void Death()
     {
+        IsDeath = true;
         bodyColliders.ForEach(collider => 
         {
             collider.isTrigger = false;

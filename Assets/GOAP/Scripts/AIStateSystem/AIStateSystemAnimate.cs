@@ -55,13 +55,13 @@ namespace MrThaw
 
         public override void OnActionActivate(AIBlackBoard blackBoard)
         {
-            var bbd = blackBoard.GetBBData<AIBBDAnimate>();
+            var bbd = blackBoard.GetOneBBData<AIBBDAnimate>(EnumType.AIBlackBoardKey.Animate);
             if (bbd != null)
             {
                 currentAnimation = bbd.Animation;
                 Animate();
             }
-            blackBoard.RemoveAll<AIBBDAnimate>();
+            blackBoard.RemoveAllByType<AIBBDAnimate>(EnumType.AIBlackBoardKey.Animate);
         }
         
         public void Animate()

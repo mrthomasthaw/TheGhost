@@ -61,7 +61,7 @@ namespace MrThaw.Goap.AISystem
                 if (selectedPrimaryThreat == null)
                 {
                     selectedPrimaryThreat = new AIBBDSelectedPrimaryThreat(primaryThreatInfo);
-                    blackBoard.Add(selectedPrimaryThreat);
+                    blackBoard.AddData(selectedPrimaryThreat);
                 }
                 else
                 {

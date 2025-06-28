@@ -100,7 +100,7 @@ public class AIController : MonoBehaviour
 
         Blackboard = new MrThaw.AIBlackBoard();
 
-        Blackboard.Add(new AIBBDPatrolRoute(patrolRoute));
+        Blackboard.AddData(new AIBBDPatrolRoute(patrolRoute));
 
 
 
@@ -150,6 +150,8 @@ public class AIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("current acti " + currentAction);
+        Blackboard.PrintDataDict();
         if(replan)
         {
             Debug.Log("Replan");
@@ -209,7 +211,7 @@ public class AIController : MonoBehaviour
     {
 
         //NOTE NEED TO UPDATE WORLD STATES HERE
-
+       
         if (currentAction == null)
         {
             Debug.Log("Assign action");

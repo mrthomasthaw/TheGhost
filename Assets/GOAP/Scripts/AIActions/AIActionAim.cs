@@ -19,12 +19,12 @@ namespace MrThaw.Goap.AIActions
 
         public override void OnActionStart(AIBlackBoard blackBoard)
         {
-            AIBBDSelectedPrimaryThreat threat = blackBoard.GetBBData<AIBBDSelectedPrimaryThreat>();
+            AIBBDSelectedPrimaryThreat threat = blackBoard.GetOneBBData<AIBBDSelectedPrimaryThreat>(EnumType.AIBlackBoardKey.SelectedPrimaryThreat);
             if(threat != null)
             {
                 AIBBDTurnToTransform turnToTransformBBD = new AIBBDTurnToTransform(threat.ThreatT);
-                blackBoard.Add(turnToTransformBBD);
-                blackBoard.Add(aimBBD);
+                blackBoard.AddData(turnToTransformBBD);
+                blackBoard.AddData(aimBBD);
             }
 
         }

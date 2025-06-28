@@ -38,7 +38,7 @@ public class AIStateSystemTest : MonoBehaviour
             Debug.Log("Pressed F");
 
             //Note : this will be added in action
-            blackBoard.Add<MrThaw.AIBBDMoveToPosition>(
+            blackBoard.AddData<MrThaw.AIBBDMoveToPosition>(
                 new MrThaw.AIBBDMoveToPosition(MrThaw.EnumType.AIMoveType.Walk, 0.15f, targetT.position, true, true));
 
             moveState.OnActionActivate(blackBoard);

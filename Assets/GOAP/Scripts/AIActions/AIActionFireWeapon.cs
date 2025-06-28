@@ -19,7 +19,7 @@ namespace MrThaw.Goap.AIActions
 
         public override void OnActionStart(AIBlackBoard blackBoard)
         {
-            blackBoard.Add(bbDFireWeapon);
+            blackBoard.AddData(bbDFireWeapon);
         }
 
         public override bool OnActionPerform(AIBlackBoard blackBoard)

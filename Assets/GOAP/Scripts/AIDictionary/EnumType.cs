@@ -39,5 +39,17 @@ namespace MrThaw
             Cautious, // If the alert type is cautious, it will set one of the following goal priority high [Search Area]
             Danger // If the alert type is danger, it will set one of the following goal priority high [Kill Target, Take Cover]
         }
+
+        public enum AIBlackBoardKey
+        {
+            Animate,   
+            SelectedPrimaryThreat,
+            FireWeapon,
+            MoveTo, 
+            TurnTo,
+            LookAt,
+            PatrolRoute,
+            OverallDamageToBodyConfidence
+        }
     }
 }
