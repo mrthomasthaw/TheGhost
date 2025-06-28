@@ -22,7 +22,7 @@ MonoBehaviour:
     rightHandIdlePos: {x: 0, y: 0, z: 0}
     rightHandIdleEulerAngle: {x: 0, y: 0, z: 0}
     rightHandAimPos: {x: 0.09, y: -0.021, z: 0.128}
-    rightHandAimEulerAngle: {x: 17.055, y: 28.805, z: -80.104}
+    rightHandAimEulerAngle: {x: 15.549, y: 36.848, z: -77.842}
     leftHandIdlePos: {x: 0, y: 0, z: 0}
     leftHandIdleEulerAngle: {x: 0, y: 0, z: 0}
     leftHandAimPos: {x: -0.0462, y: -0.0495, z: 0.133}
