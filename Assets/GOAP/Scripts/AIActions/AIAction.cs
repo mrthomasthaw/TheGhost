@@ -41,7 +41,10 @@ namespace MrThaw.Goap.AIActions
         // return true if the action is completed
         public virtual bool OnActionPerform(AIBlackBoard blackBoard) { return true; }
 
-        public virtual void OnActionComplete(AIBlackBoard blackBoard) { }
+        public virtual void OnActionComplete(AIBlackBoard blackBoard) 
+        {
+            AbortAction = false;
+        }
 
 
     }

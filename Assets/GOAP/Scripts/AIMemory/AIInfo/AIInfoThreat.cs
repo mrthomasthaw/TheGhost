@@ -6,24 +6,16 @@ namespace MrThaw.Goap.AIMemory.AIInfo
 {
     public class AIInfoThreat : AIMemoryData
     {
+        //BE SURE TO UPDATE Equals AND HasCode Method WHEN ADDING NEW FIELD
         public Transform TargetTransform { get; set; }
+
+        public bool IsStillValid { get; set; }
 
         public override EnumType.AIMemoryKey Key => EnumType.AIMemoryKey.ThreatInfo;
 
-        public override bool Equals(object obj)
-        {
-            return obj is AIInfoThreat threat &&
-                   //Score == threat.Score &&
-                   EqualityComparer<Transform>.Default.Equals(TargetTransform, threat.TargetTransform);
-        }
+        public HealthControl TargetHealthControl { get; set; }
 
-        public override int GetHashCode()
-        {
-            int hashCode = -514700431;
-            //hashCode = hashCode * -1521134295 + Score.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<Transform>.Default.GetHashCode(TargetTransform);
-            return hashCode;
-        }
+       
 
         public override string ToString()
         {

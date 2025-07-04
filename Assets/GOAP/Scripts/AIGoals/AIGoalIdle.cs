@@ -17,7 +17,7 @@ namespace MrThaw
         public override int CalculatePriority()
         {
             AIBBDSelectedPrimaryThreat primaryThreat = blackBoard.GetOneBBData<AIBBDSelectedPrimaryThreat>(EnumType.AIBlackBoardKey.SelectedPrimaryThreat);
-            Priority = primaryThreat == null ? maxPriority : minPriority;
+            Priority = primaryThreat == null || ! primaryThreat.IsStillValid ? maxPriority : minPriority;
             return Priority;
         }
     }

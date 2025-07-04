@@ -26,17 +26,24 @@ namespace MrThaw.Goap.AISensors
 
         public override void OnUpdate()
         {
-            //bug.Log("Before remove : " + CommonUtil.StringJoin(memory.Data));
-            memory.RemoveAllIf(CheckInvalidLineOfSightTargets(), EnumType.AIMemoryKey.ThreatInfo);
+            //Debug.Log("Before remove : " + CommonUtil.StringJoin(memory.DataDict));
+            int removedCount = memory.RemoveAllIf(CheckInvalidLineOfSightTargets(), EnumType.AIMemoryKey.ThreatInfo);
 
-            //Debug.Log("After remove : " + CommonUtil.StringJoin(memory.Data));
+            //Debug.Log("After remove : " + CommonUtil.StringJoin(memory.DataDict));
 
             float minDist = float.MaxValue;
             Collider[] cols = Physics.OverlapSphere(aiHeadT.position, sightRadius, LayerMask.GetMask("Human"));
 
-            int scoreBonus = 0;
+            float scoreBonus = 0;
             for (int x = 0; x < cols.Length; x++)
             {
+                HealthControl targetHealth = cols[x].transform.GetComponentInParent<HealthControl>();
+
+                if (targetHealth == null || targetHealth.IsDeath)
+                {
+                    continue;
+                }
+
                 Vector3 dir = cols[x].transform.position - aiHeadT.position;
 
                 RaycastHit hitInfo;
@@ -52,7 +59,7 @@ namespace MrThaw.Goap.AISensors
                     continue;
                 }
 
-                int score = 1;
+                float score = 1;
 
                 float dist = Vector3.Distance(aiHeadT.position, cols[x].transform.position);
                 if (minDist > dist)
@@ -63,12 +70,14 @@ namespace MrThaw.Goap.AISensors
 
                 score += scoreBonus;
 
-                AIInfoThreat threatInfo = memory.GetThreatInfoByTransform(cols[x].transform);
+                AIInfoThreat threatInfo = GetThreatInfoByTransform(cols[x].transform);
                 if (threatInfo == null) // create info
                 {
                     memory.AddData(new AIInfoThreat()
                     {
                         TargetTransform = cols[x].transform,
+                        IsStillValid = ! targetHealth.IsDeath,
+                        TargetHealthControl = targetHealth,
                         Score = score
                     });
                 }
@@ -87,15 +96,28 @@ namespace MrThaw.Goap.AISensors
                 if (t is AIInfoThreat threat)
                 {
                     Debug.Log(t.ToString());
+
+
                     if (Vector3.Distance(aiHeadT.position, threat.TargetTransform.position) > sightRadius)
+                    {
+                        threat.IsStillValid = false;
                         return true;
+                    }
+
 
                     RaycastHit hitInfo;
                     // Here you can check properties of 'threat'
                     if (TargetBehindObstacle(aiHeadT, threat.TargetTransform, out hitInfo))
                     {
+                        threat.IsStillValid = false;
                         //Debug.Log("hit the obstacle");
                         return true; // remove this item
+                    }
+
+                    if(threat.TargetHealthControl.IsDeath)
+                    {
+                        threat.IsStillValid = false;
+                        return true;
                     }
                 }
                 return false; // keep this item
@@ -107,6 +129,12 @@ namespace MrThaw.Goap.AISensors
             Vector3 dir = destination.position - source.position;
             Debug.DrawRay(source.position, dir, Color.green);
             return Physics.Raycast(source.position, dir.normalized, out hitInfo, dir.magnitude, LayerMask.GetMask("Obstacle"));
+        }
+
+        private AIInfoThreat GetThreatInfoByTransform(Transform transform)
+        {
+            return memory.GetAllMemoryDataByType<AIInfoThreat>(EnumType.AIMemoryKey.ThreatInfo)
+                .Where(s => s.TargetTransform != null && s.TargetTransform == transform && s.IsStillValid).FirstOrDefault();
         }
     }
 

@@ -56,5 +56,14 @@ namespace MrThaw
         {
             ThreatInfo,
         }
+
+        public enum AIWorldStateKey
+        {
+            AssaultTarget,
+            Aim,
+            SecureArea,
+            AlertType,
+            HasTarget
+        }
     }
 }

@@ -117,11 +117,12 @@ public class AIController : MonoBehaviour
 
         systems.Add(new AISystemPrimaryThreatSelection(Memory, Blackboard));
 
-        goalList.Add(new AIGoalIdle());
+        goalList.Add(new AIGoalPatrol());
         goalList.Add(new AIGoalEliminateThreat());
 
         actionList.Add(new AIActionPatrolWithWait());
         actionList.Add(new AIActionAim());
+        actionList.Add(new AIActionUnAim());
         actionList.Add(new AIActionFireWeapon());
 
        
@@ -139,28 +140,33 @@ public class AIController : MonoBehaviour
 
     private void SetUpWorldStates()
     {
-        //worldState = new Dictionary<string, object>();
-        //worldState.Add("aiAlertType", EnumType.AIAlertType.Normal);
-        //worldState.Add("aim", false);
         agentWorldState = new AIWorldState();
-        agentWorldState.Add("aiAlertType", EnumType.AIAlertType.Normal);
-        agentWorldState.Add("aim", false);
+        agentWorldState.Add(EnumType.AIWorldStateKey.HasTarget.ToString(), false);
+        agentWorldState.Add(EnumType.AIWorldStateKey.Aim.ToString(), false);
     }
 
     // Update is called once per frame
     void Update()
     {
         Debug.Log("current acti " + currentAction);
+
         Blackboard.PrintDataDict();
-        if(replan)
+
+        Debug.Log("WorldState : " + agentWorldState.PrintWorldStates());
+        if (replan)
         {
             Debug.Log("Replan");
+
+            UpdateSensors(); // Update replan
+
+            //The sensors should be updated before calculating the goal
             planner.CalculateGoalPriority();
 
             Plan = planner.CalculateActionPlan();
             Debug.Log("New plan : " + CommonUtil.StringJoin(Plan));
 
-            currentAction.AbortAction = true;
+            if(currentAction != null)
+                currentAction.AbortAction = true;
 
             replan = false; // reset replan
         }
@@ -218,6 +224,7 @@ public class AIController : MonoBehaviour
             if (Plan.Count == 0)
             {
                 Debug.Log("No action to execute");
+                Replan = true;
                 return;
             }
 
@@ -242,8 +249,7 @@ public class AIController : MonoBehaviour
             {
                 Debug.Log("Abort action");
                 //Plan.Clear();
-                currentAction.OnActionComplete(Blackboard);
-                currentAction = null;
+                ExitCurrentAction();
 
                 foreach (AIStateSystem state in states)
                 {
@@ -264,16 +270,27 @@ public class AIController : MonoBehaviour
 
 
                 Debug.Log("All state completed");
-                currentAction.OnActionComplete(Blackboard); // when the action is completed
+                ExitCurrentAction();
 
-                agentWorldState.CopyWorldStates(currentAction.Effects);
-                currentAction = null;
+                foreach (AIStateSystem state in states)
+                {
+                    state.OnActionExit(Blackboard);
+                }
             }
+
+            //if current action is repeatable, it should update the worldstates
         }
 
         Debug.Log(agentWorldState.PrintWorldStates());
         //NOTE NEED TO UPDATE WORLD STATES HERE
         
+    }
+
+    private void ExitCurrentAction()
+    {
+        currentAction.OnActionComplete(Blackboard); // when the action is completed
+        agentWorldState.CopyWorldStates(currentAction.Effects);
+        currentAction = null;
     }
 
     private bool AllStateComplete()

@@ -45,42 +45,36 @@ public class WeaponTargetingSMB : CustomSMB
     {
         weaponPositionControl.HandleWeaponAim(false);
         weaponPositionControl.IKControl.SetLookObj(null);
+        weaponPositionControl.IKControl.SetAimTarget(null);
         blackBoard.RemoveBBData(bbBFireWeapon);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(threat != null)
+        if (bbBFireWeapon != null && bbBFireWeapon.IsStillValid)
         {
-            if (bbBFireWeapon != null && bbBFireWeapon.FireWeapon)
+            if (fireTimer < fireTimerMax)
             {
-                if (fireTimer < fireTimerMax)
-                {
-                    fireTimer += Time.deltaTime;
-                    FireWeapon(true);
-                }
-                else if (pauseTimer < pauseTimerMax)
-                {
-                    pauseTimer += Time.deltaTime;
-                    FireWeapon(false);
-                }
-                else
-                {
-                    fireTimer = 0;
-                    pauseTimer = 0;
-
-                    fireTimerMax = UnityEngine.Random.Range(1.6f, 4f);
-                    pauseTimerMax = UnityEngine.Random.Range(0.6f, 2f);
-                }
+                fireTimer += Time.deltaTime;
+                FireWeapon(true);
+            }
+            else if (pauseTimer < pauseTimerMax)
+            {
+                pauseTimer += Time.deltaTime;
+                FireWeapon(false);
             }
             else
             {
-                bbBFireWeapon = blackBoard.GetOneBBData<AIBBDSMBFireWeapon>(EnumType.AIBlackBoardKey.FireWeapon);
-                FireWeapon(false);
+                fireTimer = 0;
+                pauseTimer = 0;
+
+                fireTimerMax = UnityEngine.Random.Range(1.6f, 4f);
+                pauseTimerMax = UnityEngine.Random.Range(0.6f, 2f);
             }
         }
         else
         {
+            bbBFireWeapon = blackBoard.GetOneBBData<AIBBDSMBFireWeapon>(EnumType.AIBlackBoardKey.FireWeapon);
             FireWeapon(false);
         }
     }

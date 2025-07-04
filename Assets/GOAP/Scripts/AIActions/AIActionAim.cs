@@ -11,20 +11,25 @@ namespace MrThaw.Goap.AIActions
         public override void SetUp(AIBlackBoard blackBoard)
         {
             base.SetUp(blackBoard);
-            Preconditions.Add("aim", false);
+            Preconditions.Add(EnumType.AIWorldStateKey.HasTarget.ToString(), true);
+            Preconditions.Add(EnumType.AIWorldStateKey.Aim.ToString(), false);
             RequiredStatesToComplete = true;
 
-            Effects.Add("aim", true);
+            Effects.Add(EnumType.AIWorldStateKey.Aim.ToString(), true);
         }
 
         public override void OnActionStart(AIBlackBoard blackBoard)
         {
             AIBBDSelectedPrimaryThreat threat = blackBoard.GetOneBBData<AIBBDSelectedPrimaryThreat>(EnumType.AIBlackBoardKey.SelectedPrimaryThreat);
-            if(threat != null)
+            if(threat != null && threat.IsStillValid)
             {
                 AIBBDTurnToTransform turnToTransformBBD = new AIBBDTurnToTransform(threat.ThreatT);
                 blackBoard.AddData(turnToTransformBBD);
                 blackBoard.AddData(aimBBD);
+            }
+            else
+            {
+                AbortAction = true;
             }
 
         }

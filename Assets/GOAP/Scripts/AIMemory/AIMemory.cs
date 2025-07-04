@@ -26,12 +26,7 @@ namespace MrThaw.Goap.AIMemory
             container.DataList.Add(data);
         }
 
-        public AIInfoThreat GetThreatInfoByTransform(Transform transform)
-        {
-            if (transform == null) return null;
-            return GetAllMemoryDataByType<AIInfoThreat>(EnumType.AIMemoryKey.ThreatInfo)
-                .Where(s => s.TargetTransform != null && s.TargetTransform == transform).FirstOrDefault();
-        }
+
 
 
         public List<T> GetAllMemoryDataByType<T>(EnumType.AIMemoryKey key) where T : AIMemoryData
@@ -51,9 +46,11 @@ namespace MrThaw.Goap.AIMemory
             return null;
         }
 
-        public void RemoveAllIf(System.Predicate<AIMemoryData> predicate, EnumType.AIMemoryKey key)
-        {           
-            GetAllMemoryDataByType<AIMemoryData>(key).RemoveAll(predicate);
+        public int RemoveAllIf(System.Predicate<AIMemoryData> predicate, EnumType.AIMemoryKey key)
+        {
+            var container = GetContainer(key);
+            if (container == null) return 0;
+            return container.DataList.RemoveAll(predicate);
         }
     }
 }

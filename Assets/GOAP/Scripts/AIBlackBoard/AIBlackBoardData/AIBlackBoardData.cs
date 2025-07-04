@@ -7,5 +7,9 @@ namespace MrThaw
     public abstract class AIBlackBoardData
     {
         public abstract EnumType.AIBlackBoardKey Key { get; }
+
+        public bool IsStillValid { get; set; }
+
+
     }
 }

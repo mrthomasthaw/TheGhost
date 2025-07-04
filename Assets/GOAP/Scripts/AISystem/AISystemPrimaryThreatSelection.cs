@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Linq;
-using System.Collections.Generic;
-using UnityEngine;
-using MrThaw;
+﻿using MrThaw;
 using MrThaw.Goap.AIMemory;
 using MrThaw.Goap.AIMemory.AIInfo;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using UnityEngine;
 
 namespace MrThaw.Goap.AISystem
 {
@@ -33,16 +34,23 @@ namespace MrThaw.Goap.AISystem
             if (threatInfoList.Count == 0)
             {
                 //Debug.Log("Threat not found : ");
-                blackBoard.RemoveBBData(selectedPrimaryThreat);
+                if(selectedPrimaryThreat != null)
+                {
+                    selectedPrimaryThreat.UpdateThreatInfo(selectedThreatInfo);
+
+                    blackBoard.RemoveBBData(selectedPrimaryThreat);
+
+                    selectedThreatInfo = null;
+                    selectedPrimaryThreat = null;
+                }
 
                 //Debug.Log(CommonUtil.StringJoin(blackBoard.Datas));
 
-                selectedThreatInfo = null;
-                selectedPrimaryThreat = null;
 
-                if(! aIController.AgentWorldState.CheckEqual("aiAlertType", EnumType.AIAlertType.Normal))
+
+                if (aIController.AgentWorldState.CheckEqual(EnumType.AIWorldStateKey.HasTarget.ToString(), true))
                 {
-                    aIController.AgentWorldState.Set("aiAlertType", EnumType.AIAlertType.Normal);
+                    aIController.AgentWorldState.Set(EnumType.AIWorldStateKey.HasTarget.ToString(), false);
                     aIController.Replan = true;
                 }
                 
@@ -55,7 +63,7 @@ namespace MrThaw.Goap.AISystem
 
             AIInfoThreat primaryThreatInfo = threatInfoList[0];
 
-            if(! primaryThreatInfo.Equals(selectedThreatInfo))
+            if(! IsSameTarget(primaryThreatInfo)) // If the transform doesn't match
             {
                 selectedThreatInfo = primaryThreatInfo;
 
@@ -70,18 +78,29 @@ namespace MrThaw.Goap.AISystem
                 }
             }
 
+
             //Debug.Log("Threat found : " + primaryThreatInfo);
 
-            if(! aIController.AgentWorldState.CheckEqual("aiAlertType", EnumType.AIAlertType.Danger))
+            if(aIController.AgentWorldState.CheckEqual(EnumType.AIWorldStateKey.HasTarget.ToString(), false))
             {
-                aIController.AgentWorldState.Set("aiAlertType", EnumType.AIAlertType.Danger); // The Goal will either be Kill Target, Take Cover, similar to hasTarget
-                                                                                      // If the alert type is danger, it will set one of the following goal priority high [Kill Target, Take Cover]
-
+                aIController.AgentWorldState.Set(EnumType.AIWorldStateKey.HasTarget.ToString(), true); // The Goal will either be Kill Target, Take Cover, similar to hasTarget
+                                                                                                       // If the alert type is danger, it will set one of the following goal priority high [Kill Target, Take Cover]
                 aIController.Replan = true;
             }
 
             ///Debug.Log(CommonUtil.StringJoin(blackBoard.Datas));
             Debug.Log("Updated by " + this.GetType() + " " + CommonUtil.StringJoin(aIController.AgentWorldState.WorldStates));
+        }
+
+        private bool IsSameTarget(AIInfoThreat aIInfo)
+        {
+            if(aIInfo == null)
+                return false;
+
+            if(selectedThreatInfo == null)
+                return false;
+
+            return EqualityComparer<Transform>.Default.Equals(aIInfo.TargetTransform, selectedThreatInfo.TargetTransform);
         }
     }
 

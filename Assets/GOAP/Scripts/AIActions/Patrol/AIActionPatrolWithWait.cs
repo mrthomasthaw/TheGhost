@@ -23,9 +23,10 @@ namespace MrThaw.Goap.AIActions
 
             RequiredStatesToComplete = true;
 
-            Preconditions.Add("secureTheArea", false);
+            Preconditions.Add(EnumType.AIWorldStateKey.HasTarget.ToString(), false);
+            Preconditions.Add(EnumType.AIWorldStateKey.Aim.ToString(), false);
 
-            Effects.Add("secureTheArea", true);
+            //Effects.Add(EnumType.AIWorldStateKey.SecureArea.ToString(), true);
 
 
             if (blackBoard.GetOneBBData<AIBBDPatrolRoute>(EnumType.AIBlackBoardKey.PatrolRoute) == null || blackBoard.GetOneBBData<AIBBDPatrolRoute>(EnumType.AIBlackBoardKey.PatrolRoute).PatrolRoute == null)
@@ -48,7 +49,7 @@ namespace MrThaw.Goap.AIActions
                     reachTolerance, patrolPoints[currentIndex],
                     true, true);
 
-                
+
                 blackBoard.AddData(moveToBbD);
                 isIdleActive = false;
             }
@@ -71,6 +72,7 @@ namespace MrThaw.Goap.AIActions
 
         public override void OnActionComplete(AIBlackBoard blackBoard)
         {
+            base.OnActionComplete(blackBoard);
             if (!isIdleActive)
             {
                 blackBoard.RemoveBBData(moveToBbD);

@@ -6,9 +6,10 @@ namespace MrThaw.Goap.AIMemory
 {
     public abstract class AIMemoryData
     {
+        //BE SURE TO UPDATE Equals AND HasCode Method WHEN ADDING NEW FIELD IN ITS SUBCLASSES
         public abstract EnumType.AIMemoryKey Key { get; }
 
-        public int Score { get; set; }
+        public float Score { get; set; }
     }
 }
 

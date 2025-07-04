@@ -5,7 +5,6 @@ using UnityEngine;
 namespace MrThaw {
     public class AIBBDSMBFireWeapon : AIBlackBoardData
     {
-        public bool FireWeapon { get; private set; }
 
         public override EnumType.AIBlackBoardKey Key => EnumType.AIBlackBoardKey.FireWeapon;
 
@@ -14,10 +13,5 @@ namespace MrThaw {
 
         }
 
-        public AIBBDSMBFireWeapon(bool fireWeapon)
-        {
-            this.FireWeapon = fireWeapon;
-
-        }
     }
 }

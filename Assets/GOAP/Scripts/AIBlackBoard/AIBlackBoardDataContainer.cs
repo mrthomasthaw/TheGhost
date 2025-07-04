@@ -45,7 +45,7 @@ namespace MrThaw
 
         public override string ToString()
         {
-            return $"AIBlackBoardDataContainer {{ DataList = {CommonUtil.StringJoin(DataList)} }}";
+            return $"{{ DataList = {CommonUtil.StringJoin(DataList)} }}";
         }
     }
 }

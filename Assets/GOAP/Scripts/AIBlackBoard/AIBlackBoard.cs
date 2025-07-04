@@ -49,6 +49,7 @@ namespace MrThaw
 
         public void RemoveBBData<T>(T bbdata) where T : AIBlackBoardData
         {
+            if (bbdata == null) return;
             var container = GetContainer(bbdata.Key);
             if (container == null) return;
             container.RemoveBBData(bbdata);

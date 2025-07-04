@@ -12,13 +12,14 @@ namespace MrThaw {
             minPriority = 0;
             maxPriority = 10;
 
-            EndGoal.Add("assaultPrimaryThreat", true);
+            
+            EndGoal.Add(EnumType.AIWorldStateKey.AssaultTarget.ToString(), true);
         }
 
         public override int CalculatePriority()
         {
             AIBBDSelectedPrimaryThreat primaryThreat = blackBoard.GetOneBBData<AIBBDSelectedPrimaryThreat>(EnumType.AIBlackBoardKey.SelectedPrimaryThreat);
-            if(primaryThreat != null) 
+            if(primaryThreat != null && primaryThreat.IsStillValid) 
             {
                 Priority = 10;
             }

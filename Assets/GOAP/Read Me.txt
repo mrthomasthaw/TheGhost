@@ -1,0 +1,4 @@
+The action should only contain abstract logic. 
+It should commands when to start or stop the action to StateMachineBehaviour or other AIStateSystems
+It should not deal with low level detail implementation of the action
+It should not update the validity of blackboard data

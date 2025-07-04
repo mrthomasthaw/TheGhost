@@ -114,6 +114,10 @@ public static class CommonUtil
 
     public static bool MatchWorldStates(Dictionary<string, object> conditions, Dictionary<string, object> worldStateToCheck)
     {
+
+        if(worldStateToCheck == null ||  worldStateToCheck.Count == 0)  
+            return false; 
+
         foreach (KeyValuePair<string, object> kv in conditions)
         {
             if (!worldStateToCheck.ContainsKey(kv.Key))
