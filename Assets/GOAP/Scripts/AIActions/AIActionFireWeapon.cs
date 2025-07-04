@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace MrThaw.Goap.AIActions
@@ -26,6 +27,9 @@ namespace MrThaw.Goap.AIActions
             AbortAction = bbDSelectedPrimaryThreat == null || ! bbDSelectedPrimaryThreat.IsStillValid;
             bbDFireWeapon.IsStillValid = true; // To enable action
             blackBoard.AddData(bbDFireWeapon);
+
+            AIBBDTurnToTransform turnToTransformBBD = new AIBBDTurnToTransform(bbDSelectedPrimaryThreat.ThreatT);
+            blackBoard.AddData(turnToTransformBBD);
         }
 
         public override bool OnActionPerform(AIBlackBoard blackBoard)

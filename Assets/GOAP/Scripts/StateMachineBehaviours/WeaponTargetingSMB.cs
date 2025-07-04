@@ -38,6 +38,7 @@ public class WeaponTargetingSMB : CustomSMB
             Debug.Log("Threat T : " + threat.ThreatT);
             weaponPositionControl.IKControl.SetLookObj(threat.ThreatT);
             weaponPositionControl.IKControl.SetAimTarget(threat.ThreatT);
+            weaponPositionControl.IKControl.SetIkActive(true);
         }
     }
 
@@ -46,6 +47,7 @@ public class WeaponTargetingSMB : CustomSMB
         weaponPositionControl.HandleWeaponAim(false);
         weaponPositionControl.IKControl.SetLookObj(null);
         weaponPositionControl.IKControl.SetAimTarget(null);
+        weaponPositionControl.IKControl.SetIkActive(false);
         blackBoard.RemoveBBData(bbBFireWeapon);
     }
 

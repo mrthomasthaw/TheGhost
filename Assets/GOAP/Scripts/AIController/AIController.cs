@@ -250,11 +250,6 @@ public class AIController : MonoBehaviour
                 Debug.Log("Abort action");
                 //Plan.Clear();
                 ExitCurrentAction();
-
-                foreach (AIStateSystem state in states)
-                {
-                    state.OnActionExit(Blackboard);
-                }
                 //Stop the whole action sequence
             }
             else if(currentAction.OnActionPerform(Blackboard)) // is the action completed
@@ -271,11 +266,6 @@ public class AIController : MonoBehaviour
 
                 Debug.Log("All state completed");
                 ExitCurrentAction();
-
-                foreach (AIStateSystem state in states)
-                {
-                    state.OnActionExit(Blackboard);
-                }
             }
 
             //if current action is repeatable, it should update the worldstates
@@ -291,6 +281,11 @@ public class AIController : MonoBehaviour
         currentAction.OnActionComplete(Blackboard); // when the action is completed
         agentWorldState.CopyWorldStates(currentAction.Effects);
         currentAction = null;
+
+        foreach (AIStateSystem state in states)
+        {
+            state.OnActionExit(Blackboard);
+        }
     }
 
     private bool AllStateComplete()

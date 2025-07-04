@@ -10,7 +10,8 @@ namespace MrThaw
     {
         protected Animator animator; // The animator attached to the player
 
-        public bool ikActive = false; // check if ik is active
+        [SerializeField]
+        private bool ikActive = false; // check if ik is active
         private Transform currentAimPivotObj, aimPivotR, aimPivotL;
         public Transform RightHandObj { get; private set; } // target for right hand
         public Transform LeftHandObj { get; private set; } // target for left hand
@@ -135,14 +136,6 @@ namespace MrThaw
         void HandleAimPivotObjRotationAndPosition(Transform aimPivot, Transform shoulderTransform)
         {
             aimPivot.position = shoulderTransform.position;
-
-            //Vector3 lookDir = aimDirection - aimPivot.position;
-            //lookDir.Normalize();
-
-            //Debug.DrawRay(aimPivot.position, lookDir, Color.red);
-
-            //Quaternion lookRot = Quaternion.LookRotation(lookDir);
-            //aimPivot.rotation = Quaternion.Slerp(aimPivot.rotation, lookRot, Time.deltaTime * 600);
             aimPivot.rotation = aimPivotLookRotation;
         }
 
@@ -222,6 +215,11 @@ namespace MrThaw
         public void SetAimTarget(Transform aimTarget)
         {
             this.aimTarget = aimTarget;
+        }
+
+        public void SetIkActive(bool isActive)
+        {
+            this.ikActive = isActive;
         }
 
         public void OnDeath(GameObject sender)
