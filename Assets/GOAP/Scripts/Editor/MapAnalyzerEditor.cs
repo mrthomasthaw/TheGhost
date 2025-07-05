@@ -63,6 +63,7 @@ public class MapAnalyzerEditor : Editor
                     mapData.allPointDataMonos.Add(dMono);
                 }
 
+                Debug.Log("AFter adding monoPoint ");
                 List<PointData> dataPoints = new List<PointData>();
 
                 // Create a gameobject for every child gameobject of "Map Data"
@@ -73,6 +74,8 @@ public class MapAnalyzerEditor : Editor
                     dataPoints.Add(new PointData(i, monos[i].transform.position, monos[i].gameObject));
                     monos[i].pointDataNo = i;
                 }
+
+                Debug.Log("AFter adding another monoPoint ");
 
                 List<PointCoverData> allPossibleCoverPoints = new List<PointCoverData>();
 
@@ -96,6 +99,8 @@ public class MapAnalyzerEditor : Editor
 
                     #endregion Cover Check
                 }
+
+                Debug.Log("After cover check");
                 if (CoverTargetLogic.transform_static)
                     DestroyImmediate(CoverTargetLogic.transform_static.gameObject, false);
                 CoverTargetLogic.debugCoverCheck = debugCover;
@@ -127,6 +132,7 @@ public class MapAnalyzerEditor : Editor
                 //    }
                 //}
 
+                Debug.Log("Cover edge check");
                 //Cover edge checks
                 List<PointCoverData> newPoints = new List<PointCoverData>();
                 foreach (var coverPointData in allPossibleCoverPoints)
@@ -142,35 +148,81 @@ public class MapAnalyzerEditor : Editor
                     allPossibleCoverPoints.Add(cpd);
 
                 //Remove same cover points (except edges)
+                //for (int i = 0; i < allPossibleCoverPoints.Count; i++)
+                //{
+                //    if (allPossibleCoverPoints[i].isEdge)
+                //        continue;
+                //    var cCoverPoint_i = allPossibleCoverPoints[i];
+                //    for (int j = i + 1; j < allPossibleCoverPoints.Count; j++)
+                //    {
+                //        if (!allPossibleCoverPoints[j].isEdge && Vector3.Distance(cCoverPoint_i.CoverPosition, allPossibleCoverPoints[j].CoverPosition) < analyzer.closeCoverRemovalDist)
+                //        {
+                //            allPossibleCoverPoints.Remove(allPossibleCoverPoints[j]);
+                //        }
+                //    }
+                //}
+
+                Debug.Log("Before removing same cover point ");
+
+                List<PointCoverData> toRemove = new List<PointCoverData>();
+
                 for (int i = 0; i < allPossibleCoverPoints.Count; i++)
                 {
                     if (allPossibleCoverPoints[i].isEdge)
                         continue;
+
                     var cCoverPoint_i = allPossibleCoverPoints[i];
                     for (int j = i + 1; j < allPossibleCoverPoints.Count; j++)
                     {
                         if (!allPossibleCoverPoints[j].isEdge && Vector3.Distance(cCoverPoint_i.CoverPosition, allPossibleCoverPoints[j].CoverPosition) < analyzer.closeCoverRemovalDist)
                         {
-                            allPossibleCoverPoints.Remove(allPossibleCoverPoints[j]);
+                            toRemove.Add(allPossibleCoverPoints[j]);
                         }
                     }
                 }
 
+                foreach (var r in toRemove)
+                    allPossibleCoverPoints.Remove(r);
+
+
                 // Remove similar edge cover points
+                //for (int i = 0; i < allPossibleCoverPoints.Count; i++)
+                //{
+                //    if (!allPossibleCoverPoints[i].isEdge)
+                //        continue;
+                //    var cCoverPoint_i = allPossibleCoverPoints[i];
+                //    for (int j = i + 1; j < allPossibleCoverPoints.Count; j++)
+                //    {
+                //        if (allPossibleCoverPoints[j].isEdge && Vector3.Distance(cCoverPoint_i.CoverPosition, allPossibleCoverPoints[j].CoverPosition) < analyzer.closeCoverEdgeRemovalDist)
+                //        {
+                //            allPossibleCoverPoints.Remove(allPossibleCoverPoints[j]);
+                //        }
+                //    }
+                //}
+
+                Debug.Log("Before removing edge  ");
+                List<PointCoverData> toRemoveEdges = new List<PointCoverData>();
+
                 for (int i = 0; i < allPossibleCoverPoints.Count; i++)
                 {
                     if (!allPossibleCoverPoints[i].isEdge)
                         continue;
+
                     var cCoverPoint_i = allPossibleCoverPoints[i];
                     for (int j = i + 1; j < allPossibleCoverPoints.Count; j++)
                     {
                         if (allPossibleCoverPoints[j].isEdge && Vector3.Distance(cCoverPoint_i.CoverPosition, allPossibleCoverPoints[j].CoverPosition) < analyzer.closeCoverEdgeRemovalDist)
                         {
-                            allPossibleCoverPoints.Remove(allPossibleCoverPoints[j]);
+                            toRemoveEdges.Add(allPossibleCoverPoints[j]);
                         }
                     }
                 }
 
+                foreach (var r in toRemoveEdges)
+                    allPossibleCoverPoints.Remove(r);
+
+
+                Debug.Log("Now it's close");
                 int count = 0;
                 foreach (var coverPoint in allPossibleCoverPoints)
                 {
@@ -214,8 +266,9 @@ public class MapAnalyzerEditor : Editor
 
     private PointCoverData CheckForSide(PointCoverData cd, bool toLeft)
     {
-        int maxTry = 1000000;
+        int maxTry = 10;
         int tryCounter = 0;
+
 
         bool haveSideEdge = false; float mult = toLeft ? -1 : 1;
         Vector3 finalNormal = cd.CoverNormal;
@@ -235,7 +288,7 @@ public class MapAnalyzerEditor : Editor
                 finalCoverGroundPos = newCoverPointL;
             }
             tryCounter++;
-        } while (haveSideEdge || tryCounter > maxTry);
+        } while (haveSideEdge && tryCounter < maxTry);
 
         if (tryCounter == 1)
         {

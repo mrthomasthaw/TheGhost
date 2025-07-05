@@ -88,6 +88,7 @@ namespace MrThaw
         {
             List<SphereTesterClass> drawers = new List<SphereTesterClass>();
 
+            Debug.Log("Inside check cover around pos");
             float step = 360 / ((float)cp.rayCheckCount360);
             Ray ray = new Ray();
             ray.origin = position + Vector3.up * cp.fromGroundPointStartUpHeight;
@@ -118,6 +119,7 @@ namespace MrThaw
 
             if (Physics.Raycast(ray, out hit, rayMaxDistance, cp.rayMask))
             {
+                Debug.Log("Ray hit layer : " + cp.rayMask);
                 if (!transform_static)
                 {
                     GameObject newGo = new GameObject();
@@ -134,7 +136,11 @@ namespace MrThaw
 #endif
                 RaycastHit toGroundHit;
 
-                if (Physics.Raycast(rayBFromHit, out toGroundHit, 1.8f, cp.rayGroundCheckMask) && (Vector3.Angle(Vector3.up, toGroundHit.normal) < cp.maxAllowedGroundNormalAngle))
+                bool rayGroundCheck = Physics.Raycast(rayBFromHit, out toGroundHit, 1.8f, cp.rayGroundCheckMask);
+
+                Debug.Log("Ray hit layer : " + rayGroundCheck + " hit " + cp.rayGroundCheckMask);
+
+                if (rayGroundCheck && (Vector3.Angle(Vector3.up, toGroundHit.normal) < cp.maxAllowedGroundNormalAngle))
                 {
                     drawers.Add(new SphereTesterClass());
                     drawers[drawers.Count - 1].groundHit = toGroundHit;
