@@ -55,6 +55,7 @@ namespace MrThaw
         public enum AIMemoryKey
         {
             ThreatInfo,
+            TacticalPositionInfo
         }
 
         public enum AIWorldStateKey

@@ -6,11 +6,20 @@ namespace MrThaw.AIMapData
 {
     public class TacticalPositionPoint : MonoBehaviour
     {
-        public int Id { get; set; }
-        public Vector3 Position {  get; private set; }
+        [SerializeField]
+        private int id;
 
-        public GameObject GameObject { get; private set; }
+        [SerializeField]
+        private Vector3 position;
+
+        public int Id { get { return id; } }
+        public Vector3 Position { get { return position; } }
 
 
+        public void SetData(int id, Vector3 position)
+        {
+            this.id = id;
+            this.position = position;
+        }
     }
 }

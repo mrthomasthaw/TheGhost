@@ -37,18 +37,24 @@ namespace MrThaw.AIMapData
                 foreach (var point in GetPointsOnNavMesh())
                 {
                     GameObject newGo;
-                    if (!_generator.pointPrefab)
+                    int id = counter;
+
+                    if (!_generator.pointPrefab) 
                         newGo = new GameObject();
                     else
                         newGo = Instantiate(_generator.pointPrefab) as GameObject;
                     newGo.transform.parent = parent;
                     newGo.transform.position = point;
+                    newGo.layer = LayerMask.NameToLayer("TacticalPoint");
                     newGo.transform.name = "Tactical Position Point " + counter++;
 
-                    var pointDataMono = newGo.AddComponent<TacticalPositionPoint>();
+                    var tacticalPositionPoint = newGo.AddComponent<TacticalPositionPoint>();
+                    tacticalPositionPoint.SetData(id, point);
+
+
                     if (mapPositionContainer.TacticalPositionPoints == null)
                         mapPositionContainer.TacticalPositionPoints = new List<TacticalPositionPoint>();
-                    mapPositionContainer.TacticalPositionPoints.Add(pointDataMono);
+                    mapPositionContainer.TacticalPositionPoints.Add(tacticalPositionPoint);
                     BoxCollider bc = newGo.AddComponent<BoxCollider>();
                     bc.size = new Vector3(.01f, .01f, .01f);
                     bc.isTrigger = true;

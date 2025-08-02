@@ -27,8 +27,6 @@ namespace MrThaw.Goap.AIMemory
         }
 
 
-
-
         public List<T> GetAllMemoryDataByType<T>(EnumType.AIMemoryKey key) where T : AIMemoryData
         {
             var container = GetContainer(key);

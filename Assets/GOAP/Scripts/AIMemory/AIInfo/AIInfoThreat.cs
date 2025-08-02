@@ -6,7 +6,6 @@ namespace MrThaw.Goap.AIMemory.AIInfo
 {
     public class AIInfoThreat : AIMemoryData
     {
-        //BE SURE TO UPDATE Equals AND HasCode Method WHEN ADDING NEW FIELD
         public Transform TargetTransform { get; set; }
 
         public bool IsStillValid { get; set; }
