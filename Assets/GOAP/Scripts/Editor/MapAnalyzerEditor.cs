@@ -51,6 +51,7 @@ public class MapAnalyzerEditor : Editor
             }
         }
 
+        /*
         if (mapData != null)
         {
             if (GUILayout.Button("Generate Map Data"))
@@ -261,7 +262,8 @@ public class MapAnalyzerEditor : Editor
                         mapData.allPointDataMonos[i].pointData.possibleCovers = null;
                 }
             } // end generate map data button
-        }
+
+        } */
     }
 
     private PointCoverData CheckForSide(PointCoverData cd, bool toLeft)
