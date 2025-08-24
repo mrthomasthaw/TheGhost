@@ -36,7 +36,7 @@ namespace MrThaw.Goap.AIMemory
 
         public AIMemoryDataContainer GetContainer(EnumType.AIMemoryKey key)
         {
-            if(DataDict.TryGetValue(key, out var container))
+            if (DataDict.TryGetValue(key, out var container))
             {
                 return container as AIMemoryDataContainer;
             }
@@ -49,6 +49,13 @@ namespace MrThaw.Goap.AIMemory
             var container = GetContainer(key);
             if (container == null) return 0;
             return container.DataList.RemoveAll(predicate);
+        }
+
+        public void ClearData(EnumType.AIMemoryKey key)
+        {
+            var container = GetContainer(key);
+            if (container != null)
+                container.DataList.Clear();
         }
     }
 }
