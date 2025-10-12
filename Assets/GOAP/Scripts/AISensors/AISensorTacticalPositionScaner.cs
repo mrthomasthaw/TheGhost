@@ -129,39 +129,44 @@ namespace MrThaw.Goap.AISensors
         private void CheckHighCoverProtectionFromOtherThreat(AIInfoTacticalPosition aIInfoTacticalPosition, Transform primaryThreatT)
         {
             List<AIInfoThreat> threatInfoList = aiMemory.GetAllMemoryDataByType<AIInfoThreat>(EnumType.AIMemoryKey.ThreatInfo).ToList();
+            Vector3 lineOfSightOrigin = aIInfoTacticalPosition.Position;
 
-            for(int i = 0;i < threatInfoList.Count;i++)
+            Debug.DrawLine(lineOfSightOrigin, lineOfSightOrigin + Vector3.up * 1.5f, Color.white);
+            lineOfSightOrigin.y += 1.5f;
+            Vector3[] shiftedPos = new Vector3[2]
+            {
+                lineOfSightOrigin + (Vector3.right * 0.1f),
+                lineOfSightOrigin + (Vector3.left * 0.1f)
+                //lineOfSightOrigin + (Vector3.up * 0.4f) + (Vector3.right * 2f),
+                //lineOfSightOrigin + (Vector3.up * 0.4f) + (Vector3.left * 2f)
+            };
+
+            for (int i = 0;i < threatInfoList.Count; i++)
             {
                 if(primaryThreatT == threatInfoList[i].TargetTransform)
                 {
-                    continue; // Only interested in other threats
+                    //continue; // Only interested in other threats
                 }
 
-                Vector3 lineOfSightOrigin = aIInfoTacticalPosition.Position;
-                Debug.DrawLine(lineOfSightOrigin, lineOfSightOrigin + Vector3.up * 1.5f, Color.white);
-                lineOfSightOrigin.y += 1.5f;
 
-
-                bool safeFromThreat = true;
-                Vector3[] shiftedPos = new Vector3[2] { Vector3.right, Vector3.left };
-                for (int j = 0; j < shiftedPos.Length; j++)
+                for (int j = 0; j < 1; j++)
                 {
-                    Vector3 origin = lineOfSightOrigin + (shiftedPos[j] * 2f);
-                    Vector3 direction = threatInfoList[i].TargetTransform.position - origin;
+                    //Vector3 origin = lineOfSightOrigin + (shiftedPos[j] * 2f);
+                    Vector3 direction = threatInfoList[i].TargetTransform.position - lineOfSightOrigin;
                     direction.y += 0.5f;
-                    Debug.DrawRay(origin, direction, Color.green);
-                    if (!Physics.Raycast(origin, direction, direction.magnitude, obstacleLayer)) // If there no obstacle?
-                    { 
-                        safeFromThreat = false;
-                        break;
+                    Debug.DrawRay(lineOfSightOrigin, direction, Color.green);
+                    if (Physics.Raycast(lineOfSightOrigin, direction, direction.magnitude, obstacleLayer)) // If there no obstacle?
+                    {
+                        aIInfoTacticalPosition.Score += 10f;
+                        //break;
                     }
                 }
 
                 //Debug.Break();
-
-                if (safeFromThreat)
-                    aIInfoTacticalPosition.Score += 20f;
+                    
             }
+
+            Debug.Log("Point " + aIInfoTacticalPosition.Id + " : " + aIInfoTacticalPosition.Score);
         }
 
         private void CheckHighCoverProtectionFromPrimaryThreat(AIInfoTacticalPosition aIInfoTacticalPosition, Transform primaryThreatT)
@@ -175,7 +180,7 @@ namespace MrThaw.Goap.AISensors
             Vector3[] shiftedPos = new Vector3[2] { Vector3.right, Vector3.left};
             for (int i = 0; i < shiftedPos.Length; i++)
             {
-                Vector3 origin = lineOfSightOrigin + (shiftedPos[i] * 2f);
+                Vector3 origin = lineOfSightOrigin + (shiftedPos[i] * 0.1f);
                 Vector3 direction = primaryThreatT.position -  origin;
                 direction.y += 0.5f;
                 Debug.DrawRay(origin, direction, Color.green);
@@ -204,10 +209,10 @@ namespace MrThaw.Goap.AISensors
             bool safeFromPrimaryThreat = true;
             Vector3[] shiftedPos = new Vector3[4] 
             { 
-                lineOfSightOrigin + (Vector3.right * 2f), 
-                lineOfSightOrigin + (Vector3.left * 2f),
-                lineOfSightOrigin + (Vector3.up * 0.4f) + (Vector3.right * 2f),
-                lineOfSightOrigin + (Vector3.up * 0.4f) + (Vector3.left * 2f)
+                lineOfSightOrigin + (Vector3.right * 0.1f), 
+                lineOfSightOrigin + (Vector3.left * 0.1f),
+                lineOfSightOrigin + (Vector3.up * 0.4f) + (Vector3.right * 0.1f),
+                lineOfSightOrigin + (Vector3.up * 0.4f) + (Vector3.left * 0.1f)
             };
 
             for (int i = 0; i < shiftedPos.Length; i++)
