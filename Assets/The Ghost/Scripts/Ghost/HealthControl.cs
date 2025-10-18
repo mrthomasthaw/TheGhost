@@ -18,7 +18,11 @@ public class HealthControl : MonoBehaviour
     [SerializeField]
     private int health;
 
+    [SerializeField]
+    private bool IsNoDamage = false;
+
     public bool IsDeath { get; private set; }
+
 
     private void Awake()
     {
@@ -63,6 +67,8 @@ public class HealthControl : MonoBehaviour
     void OnHit()
     {
         Debug.Log("Hit");
+        if (IsNoDamage) return;
+
         if(health > 0)
         {
             health -= 10;

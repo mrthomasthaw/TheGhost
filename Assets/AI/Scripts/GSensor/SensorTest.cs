@@ -24,7 +24,7 @@ public class SensorTest : MonoBehaviour
     {
         agentWorldState = new GWorldState();
         agentWorldState.Add(AIWorldStateKey.HasPrimaryTarget.ToString(), false);
-        agentWorldState.Add(AIWorldStateKey.Aim.ToString(), false);
+        agentWorldState.Add(AIWorldStateKey.AimWeapon.ToString(), false);
     }
 
     // Update is called once per frame

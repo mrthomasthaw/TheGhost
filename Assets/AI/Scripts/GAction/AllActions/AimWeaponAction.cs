@@ -21,10 +21,10 @@ public class AimWeaponAction : GAction
     {
         base.SetUp(blackBoardManager);
         Preconditions.Add(AIWorldStateKey.HasPrimaryTarget.ToString(), true);
-        Preconditions.Add(AIWorldStateKey.Aim.ToString(), false);
+        Preconditions.Add(AIWorldStateKey.AimWeapon.ToString(), false);
         RequiredStatesToComplete = true;
 
-        Effects.Add(AIWorldStateKey.Aim.ToString(), true);
+        Effects.Add(AIWorldStateKey.AimWeapon.ToString(), true);
     }
 
     public override void OnActionStart()
@@ -33,8 +33,7 @@ public class AimWeaponAction : GAction
         selectedThreatInfoData = blackBoardManager.GetOneDataByKey<SelectedThreatInfoData>(BlackBoardKey.SelectedPrimaryThreat);
         if (selectedThreatInfoData != null && selectedThreatInfoData.IsStillValid) 
         {
-            weaponControl.LookAtTarget(selectedThreatInfoData.ThreatTransform);
-            weaponControl.Aim(true);
+            weaponControl.AimAtTarget(true, selectedThreatInfoData.ThreatTransform);
             animationControl.AnimateSingleAction(AnimationKey.AimWeapon);
         }
         else
@@ -45,8 +44,7 @@ public class AimWeaponAction : GAction
 
     public override bool OnActionPerform()
     {
-        weaponControl.LookAtTarget(selectedThreatInfoData.ThreatTransform);
-        weaponControl.Aim(true);
+        weaponControl.AimAtTarget(true, selectedThreatInfoData.ThreatTransform);
         return animationControl.IsAnimationFinished(AnimationKey.AimWeapon);
     }
 
@@ -54,7 +52,7 @@ public class AimWeaponAction : GAction
     {
         if (!selectedThreatInfoData.IsStillValid)
         {
-            weaponControl.Aim(false);
+            weaponControl.AimAtTarget(false, null);
         }
 
         selectedThreatInfoData = null;

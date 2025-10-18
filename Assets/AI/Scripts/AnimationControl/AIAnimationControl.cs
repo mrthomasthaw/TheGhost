@@ -11,14 +11,47 @@ public class AIAnimationControl : MonoBehaviour
 
     private AnimationStateInfo animationStateInfo;
 
+    private MrThaw.IKControl ikControl;
+
+    [SerializeField]private AnimationKey currentAnimationKey;
+
+    [SerializeField]private float layerWeight;
+
     private void Start()
     {
         animator = GetComponent<Animator>();
-
+        ikControl = GetComponent<MrThaw.IKControl>();
         animationStateInfo = new AnimationStateInfo();
+
         stateMachineBehaviours = animator.GetBehaviours<CustomStateMachineBehaviour>().ToList();
         stateMachineBehaviours.ForEach(s => s.SetUp(animationStateInfo));
     }
+
+    private void Update()
+    {
+        HandleLayerWeight();
+    }
+
+    void HandleLayerWeight()
+    {
+        switch (currentAnimationKey)
+        {
+            case AnimationKey.None:
+                break;
+            case AnimationKey.AimWeapon:
+                layerWeight = Mathf.Lerp(layerWeight, 1f, Time.deltaTime * 30f);
+                animator.SetLayerWeight(1, layerWeight);
+                break;
+            case AnimationKey.PutDownWeapon:
+                layerWeight = Mathf.Lerp(layerWeight, 0f, Time.deltaTime * 30f);
+                animator.SetLayerWeight(1, layerWeight);
+                break;
+            case AnimationKey.Crouch:
+                break;
+        }
+    }
+
+   
 
     public void AnimateSingleAction(AnimationKey key)
     {
@@ -35,6 +68,8 @@ public class AIAnimationControl : MonoBehaviour
             case AnimationKey.Crouch:
                 break;
         }
+
+        currentAnimationKey = key;
     }
 
     public bool IsAnimationFinished(AnimationKey key) 

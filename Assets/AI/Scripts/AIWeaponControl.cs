@@ -1,8 +1,10 @@
 ﻿using MrThaw;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 public class AIWeaponControl : MonoBehaviour
 {
@@ -12,6 +14,8 @@ public class AIWeaponControl : MonoBehaviour
 
     [SerializeField]
     private WeaponInventoryData weaponInventoryData;
+
+    private bool aim;
 
     // Start is called before the first frame update
     void Start()
@@ -28,18 +32,35 @@ public class AIWeaponControl : MonoBehaviour
         weaponInventory.SetUp();
     }
 
-    public void Aim(bool aim)
+    private void Update()
     {
         weaponPositionControl.HandleWeaponAim(aim);
     }
 
+
+    public void AimAtTarget(bool aim, Transform targetT)
+    {
+        this.aim = aim;
+
+        if (aim)
+        {
+            LookAtTarget(targetT);
+        }
+
+        weaponPositionControl.IKControl.SetLookObj(targetT);
+        weaponPositionControl.IKControl.SetAimTargetTransform(targetT);
+    }
+
     public void FireWeapon(bool fire)
     {
+        if (!aim) return;
         weaponInventory.CurrentWeapon.Shoot(fire);
     }
 
-    public void LookAtTarget(Transform threatT)
+    void LookAtTarget(Transform threatT)
     {
+        if (threatT == null) return;
+
         Vector3 threatPos = threatT.position;
         Vector3 origin = transform.position;
 

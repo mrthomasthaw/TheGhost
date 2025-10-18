@@ -7,6 +7,7 @@ public class FireWeaponAction : GAction
 {
     private AIWeaponControl weaponControl;
 
+
     public FireWeaponAction(AIWeaponControl weaponControl)
     {
         this.weaponControl = weaponControl;
@@ -16,7 +17,7 @@ public class FireWeaponAction : GAction
     {
         base.SetUp(blackBoardManager);
         Preconditions.Add(AIWorldStateKey.HasPrimaryTarget.ToString(), true);
-        Preconditions.Add(AIWorldStateKey.Aim.ToString(), true);
+        Preconditions.Add(AIWorldStateKey.AimWeapon.ToString(), true);
 
 
         Effects.Add(AIWorldStateKey.AssaultTarget.ToString(), true);
@@ -27,8 +28,7 @@ public class FireWeaponAction : GAction
         SelectedThreatInfoData selectedThreatInfoData = blackBoardManager.GetOneDataByKey<SelectedThreatInfoData>(BlackBoardKey.SelectedPrimaryThreat);
         if (selectedThreatInfoData != null && selectedThreatInfoData.IsStillValid)
         {
-            weaponControl.LookAtTarget(selectedThreatInfoData.ThreatTransform);
-            weaponControl.Aim(true);
+            weaponControl.AimAtTarget(true, selectedThreatInfoData.ThreatTransform);
             weaponControl.FireWeapon(true);
         }
 
@@ -37,7 +37,7 @@ public class FireWeaponAction : GAction
 
     public override void OnActionComplete()
     {
-        weaponControl.Aim(false);
         weaponControl.FireWeapon(false);
     }
+
 }

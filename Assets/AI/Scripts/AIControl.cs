@@ -48,14 +48,16 @@ public class AIControl : MonoBehaviour
         AIWeaponControl weaponControl = GetComponent<AIWeaponControl>();
         AIAnimationControl animationControl = GetComponent<AIAnimationControl>();
         
-        IdleAction idleAction = new IdleAction();
+        IdleAction idleAction = new IdleAction(weaponControl);
         AimWeaponAction aimWeaponAction = new AimWeaponAction(animationControl, weaponControl, transform);
         FireWeaponAction fireWeaponAction = new FireWeaponAction(weaponControl);
+        UnAimWeaponAction unAimWeaponAction = new UnAimWeaponAction(weaponControl, animationControl);
 
         List<GAction> actionList = new List<GAction>
         {
             idleAction,
             aimWeaponAction,
+            unAimWeaponAction,
             fireWeaponAction
         };
 
@@ -78,7 +80,7 @@ public class AIControl : MonoBehaviour
     {
         agentWorldState = new GWorldState();
         agentWorldState.Add(AIWorldStateKey.HasPrimaryTarget.ToString(), false);
-        agentWorldState.Add(AIWorldStateKey.Aim.ToString(), false);
+        agentWorldState.Add(AIWorldStateKey.AimWeapon.ToString(), false);
     }
 
     void Update()

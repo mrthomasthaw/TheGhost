@@ -182,6 +182,7 @@ namespace MrThaw
             }
         }
 
+        //This meant to be called in every frame
         public void HandleWeaponAim(bool input)
         {
             aim = input;

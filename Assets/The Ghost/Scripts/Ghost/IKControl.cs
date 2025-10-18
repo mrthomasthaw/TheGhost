@@ -18,8 +18,8 @@ namespace MrThaw
         private Transform lookObj = null; // target for head
         private Transform cameraT;
         private Transform rShoulderBoneT, lShoulderBoneT;
-        private Transform aimTarget;
-        private Vector3 aimDirection;
+        private Transform aimTargetT;
+        private Vector3 directionToAimTarget;
         private Quaternion aimPivotLookRotation;
         private bool death = false;
 
@@ -32,9 +32,16 @@ namespace MrThaw
         [SerializeField]
         private float aimYOffset;
 
+        [SerializeField]
+        private LayerMask targetableLayer;
+
         private float rHandWeight, lHandWeight;
 
+        [SerializeField] private float weight, bWeight, hWeight; 
 
+        private Vector3 aimPivotTargetDirection;
+
+        private Vector3 ikLookPosition;
 
         public bool UseCameraDirForAim;
         public float RHandWeight { get => rHandWeight; set => rHandWeight = value; }
@@ -72,7 +79,11 @@ namespace MrThaw
         private void Update()
         {
             if (death) return;
-            UpdateAimDirection(currentAimPivotObj);
+            //UpdateAimDirection(currentAimPivotObj);
+            HandleDirectionForAim();
+            HandleAimPosition();
+            HandleChestLookAtPosition();
+            HandleAimPivotRotation(currentAimPivotObj);
         }
 
         private void OnAnimatorMove()
@@ -95,12 +106,19 @@ namespace MrThaw
                 {
 
                     // Set the look target position, if one has been assigned
-                    if (lookObj != null)
-                    {
-                        animator.SetLookAtWeight(0.3f, 0.3f, 1f);
-                        //animator.SetLookAtWeight(0.3f);
-                        animator.SetLookAtPosition(lookObj.position);
-                    }
+                    //if (lookObj != null)
+                    //{
+                    //    animator.SetLookAtWeight(0.3f, 0.3f, 1f);
+                    //    //animator.SetLookAtWeight(0.3f);
+                    //    animator.SetLookAtPosition(lookObj.position);
+                    //}
+
+                    hWeight = Mathf.Lerp(hWeight, 0f, Time.deltaTime * 10f);
+                    bWeight = Mathf.Lerp(bWeight, 0f, Time.deltaTime * 10f);
+                    weight = Mathf.Lerp(weight, 0, Time.deltaTime * 10f);
+
+                    animator.SetLookAtWeight(weight, bWeight, hWeight);
+                    animator.SetLookAtPosition(ikLookPosition);
 
 
                     // Set the right hand target position and rotation, if one has been assigned
@@ -147,9 +165,9 @@ namespace MrThaw
             {
                 ray = new Ray(cameraT.position, cameraT.forward);
 
-                aimDirection = ray.GetPoint(30);
+                directionToAimTarget = ray.GetPoint(30);
 
-                Vector3 lookDir = aimDirection - aimPivot.position;
+                Vector3 lookDir = directionToAimTarget - aimPivot.position;
                 lookDir.Normalize();
 
                 Debug.DrawRay(aimPivot.position, lookDir, Color.red);
@@ -161,21 +179,21 @@ namespace MrThaw
             }
             else
             {
-                if (aimTarget != null) 
+                if (aimTargetT != null) 
                 {
-                    Vector3 targetDir = (aimTarget.position - aimPivot.position).normalized;
+                    Vector3 targetDir = (aimTargetT.position - aimPivot.position).normalized;
 
                     // Scale vertical offset with distance (or some curve)
-                    float verticalOffset = Vector3.Distance(aimTarget.position, aimPivot.position) * -0.15f;
+                    float verticalOffset = Vector3.Distance(aimTargetT.position, aimPivot.position) * -0.15f;
 
-                    aimDirection = aimTarget.position + targetDir * aimDirectionOffset;
-                    aimDirection.y += verticalOffset;
+                    directionToAimTarget = aimTargetT.position + targetDir * aimDirectionOffset;
+                    directionToAimTarget.y += verticalOffset;
 
-                    Vector3 lookDir = (aimDirection - aimPivot.position).normalized;
+                    Vector3 lookDir = (directionToAimTarget - aimPivot.position).normalized;
 
                     
 
-                    Debug.DrawRay(aimPivot.position, (aimDirection - aimPivot.position).normalized * 5f, Color.red);
+                    Debug.DrawRay(aimPivot.position, (directionToAimTarget - aimPivot.position).normalized * 5f, Color.red);
 
 
                     Quaternion lookRot = Quaternion.LookRotation(lookDir);
@@ -189,7 +207,91 @@ namespace MrThaw
             Debug.Log(currentAimPivotObj.name);
 
         }
-        
+
+        void HandleAimPivotRotation(Transform aimPivot)
+        {
+            Vector3 LookDir = aimPivotTargetDirection - aimPivot.position;
+
+            Quaternion lookRot = Quaternion.LookRotation(LookDir);
+            aimPivotLookRotation = Quaternion.Slerp(aimPivot.rotation, lookRot, Time.deltaTime * 700f);
+        }
+
+        void HandleDirectionForAim()
+        {
+            if (UseCameraDirForAim)
+            {
+                directionToAimTarget = cameraT.forward;
+            }
+            else
+            {
+                if (aimTargetT == null)
+                {
+                    directionToAimTarget = currentAimPivotObj.forward;
+                    return;
+                }
+
+                Vector3 direction = (aimTargetT.position - currentAimPivotObj.position).normalized;
+                direction.y += -0.01f;
+                directionToAimTarget = direction;
+            }
+
+            
+            Debug.DrawRay(currentAimPivotObj.position, directionToAimTarget * 1f, Color.magenta);
+        }
+
+        void HandleAimPosition()
+        {
+            Transform sourceTransform = UseCameraDirForAim ? cameraT : currentAimPivotObj;
+
+            Ray aimHelperRay = new Ray(sourceTransform.position, directionToAimTarget);
+            aimPivotTargetDirection = aimHelperRay.GetPoint(60);
+
+            RaycastHit hit;
+
+            bool canFireWeapon = true;
+
+            Debug.DrawRay(sourceTransform.position, directionToAimTarget * 100, Color.yellow);
+
+
+            bool hitObject = Physics.Raycast(aimHelperRay, out hit, 100f, targetableLayer);
+            if (hitObject)
+            {
+                // layer 12 = bodyParts
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("bodyParts") && hit.collider.GetComponentInParent<IKControl>() == this)
+                {
+                    return;
+                }
+
+                float dist = Vector3.Distance(sourceTransform.position, hit.point);
+
+                if (dist > 1f)
+                {
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("bodyParts"))
+                    {
+                        aimPivotTargetDirection = hit.point;
+                    }
+                }
+                else
+                {
+                    canFireWeapon = false;
+                    aimPivotTargetDirection = aimHelperRay.GetPoint(10) + Vector3.up * (-8f);
+                }
+
+            }
+        }
+
+        void HandleChestLookAtPosition()
+        {
+            Transform sourceTransform = UseCameraDirForAim ? cameraT : currentAimPivotObj;
+
+            Vector3 lookDirection = directionToAimTarget + sourceTransform.up * (-0.2f);
+            Ray spineLookHelperRay = new Ray(sourceTransform.position, lookDirection);
+
+            ikLookPosition = spineLookHelperRay.GetPoint(30);
+
+            Debug.DrawRay(sourceTransform.position, lookDirection * 100, Color.red);
+        }
+
 
         public void SwitchAimPivot(ShoulderSetting shoulder)
         {
@@ -212,9 +314,9 @@ namespace MrThaw
             lookObj = t;
         }
 
-        public void SetAimTarget(Transform aimTarget)
+        public void SetAimTargetTransform(Transform aimTarget)
         {
-            this.aimTarget = aimTarget;
+            this.aimTargetT = aimTarget;
         }
 
         public void SetIkActive(bool isActive)

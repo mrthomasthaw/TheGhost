@@ -55,7 +55,7 @@ public class GWorldState
 public enum AIWorldStateKey
 {
     AssaultTarget,
-    Aim,
+    AimWeapon,
     SecureArea,
     AlertType,
     HasPrimaryTarget
